@@ -1,0 +1,36 @@
+int x = 1;
+float y;
+int print();
+
+int main(int c, float b){
+    int z;
+    x = c;
+    b = y;
+    for(i=1; i < 10; i+=1){
+        z = x + c;
+        if(z > 5){
+            break;
+        }
+    }
+    while(1){
+        if(c < b){
+            break;
+        }
+        else{
+            return 0;
+        }
+    }
+    switch (x)
+    {
+    case 1:
+        print(x);
+        break;
+    
+    default:
+        break;
+    }
+}
+
+int print(int x){
+    10 = x;
+}

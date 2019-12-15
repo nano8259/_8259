@@ -1,0 +1,383 @@
+int main(int argc, char *argv[]) {
+    string filename = argv[1];
+    Interpreter i;
+    if(!filename.empty()){
+        // 以读模式打开文件
+        ifstream infile("test"); 
+        cout << filename << endl;
+        i.switchInputStream(&infile);
+    }else{
+        cout << "read code from bash:" << endl;
+    }
+    int res = i.parse();
+    cout << "Parse complete. Result = " << res << endl;
+    return res;
+}
+
+/*
+ * The MIT License (MIT)
+ * 
+ * Copyright (c) 2014 Krzysztof Narkiewicz <krzysztof.narkiewicz@ezaquarii.com>
+ * 
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ * 
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ * 
+ */
+
+%skeleton "lalr1.cc" /* -*- C++ -*- */
+%require "3.0"
+%defines
+%define parser_class_name { Parser }
+
+%define api.token.constructor
+%define api.value.type variant
+%define parse.assert
+%define api.namespace { EzAquarii }
+%code requires
+{
+    #include <iostream>
+    #include <string>
+    #include <vector>
+    #include <stdint.h>
+    #include "command.h"
+
+    using namespace std;
+
+    namespace EzAquarii {
+        class Scanner;
+        class Interpreter;
+    }
+}
+
+// Bison calls yylex() function that must be provided by us to suck tokens
+// from the scanner. This block will be placed at the beginning of IMPLEMENTATION file (cpp).
+// We define this function here (function! not method).
+// This function is called only inside Bison, so we make it static to limit symbol visibility for the linker
+// to avoid potential linking conflicts.
+%code top
+{
+    #include <iostream>
+    #include "scanner.h"
+    #include "parser.hpp"
+    #include "interpreter.h"
+    #include "location.hh"
+    
+    // yylex() arguments are defined in parser.y
+    static EzAquarii::Parser::symbol_type yylex(EzAquarii::Scanner &scanner, EzAquarii::Interpreter &driver) {
+        return scanner.get_next_token();
+    }
+    
+    // you can accomplish the same thing by inlining the code using preprocessor
+    // x and y are same as in above static function
+    // #define yylex(x, y) scanner.get_next_token()
+    
+    using namespace EzAquarii;
+}
+
+%lex-param { EzAquarii::Scanner &scanner }
+%lex-param { EzAquarii::Interpreter &driver }
+%parse-param { EzAquarii::Scanner &scanner }
+%parse-param { EzAquarii::Interpreter &driver }
+%locations
+%define parse.trace
+%define parse.error verbose
+
+%define api.token.prefix {TOKEN_}
+
+%token END 0 "end of file"
+%token <std::string> ID  "id";
+%token <long> INT_VALUE "number";
+%token <double> FLOAT_VALUE "number";
+%token INT FLOAT CHAR BREAK WHILE CONTINUE IF ELSE RETURN /* 关键字*/
+%token ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN INC_OP DEC_OP /* 复合赋值符、自增自减符*/
+%token AT LT AE LE EQ NE AND OR /* 大于、小于、大于等于、小于等于、等于、不等于、与、或*/
+%token ASSIGN PLUS_OP MINUS_OP DIV_OP STAR_OP /* 赋值符、加减乘除运算符*/
+%token COMMA LP RP LB RB LC RC SEMMI /* 逗号，PBC括弧，分号*/
+
+%type< EzAquarii::Command > command;
+%type< std::vector<uint64_t> > arguments;
+%type <EzAquarii::ASTNode> program 
+external_declaration function_definition declaration declarator direct_declarator
+declaration_specifiers type_specifiers constant primary_expression
+compound_statement 
+%start program
+
+%%
+program:
+    external_declaration {$$ = ASTNode("program"); $$.addNode($1); $$.display(0,-1,0);}
+    ;
+
+external_declaration:
+	declaration {$$ = ASTNode("external_declaration"); $$.addNode($1);}|
+	function_definition {string name = "external_declaration"; $$ = ASTNode(name); $$.addNode($1);}
+	;
+
+declaration:
+    declaration_specifiers SEMMI {string name = "declaration_specifiers"; $$ = ASTNode(name, $1, $2);}|
+    declaration_specifiers init_declarator_list SEMMI {string name = "declaration_specifiers"; $$ = ASTNode(name, $1, $2, $3);}
+    ;
+
+declarator:
+    direct_declarator {string name = "direct_declarator"; $$ = ASTNode(name, $1);}
+    ;
+
+function_definition:
+    declaration_specifiers declarator compound_statement {}
+    ;
+
+declaration_specifiers:
+    type_specifiers {}
+    ;
+
+type_specifiers:
+    INT {}|
+    FLOAT {}|
+    CHAR {}
+    ;
+
+direct_declarator:
+    ID {}
+    ;
+
+compound_statement:
+    LC RC {}
+    ;
+
+constant:
+    INT_VALUE {}|
+    FLOAT_VALUE {}
+    ;
+
+primary_expression: 
+    ID
+	| constant
+	| STRING_LITERAL
+	| '(' expression ')'
+	;
+
+postfix_expression
+	: primary_expression
+	| postfix_expression '[' expression ']'
+	| postfix_expression '(' ')'
+	| postfix_expression '(' argument_expression_list ')'
+	| postfix_expression '.' IDENTIFIER
+	| postfix_expression PTR_OP IDENTIFIER
+	| postfix_expression INC_OP
+	| postfix_expression DEC_OP
+	;
+
+argument_expression_list
+	: assignment_expression
+	| argument_expression_list ',' assignment_expression
+	;
+
+unary_expression
+	: postfix_expression
+	| INC_OP unary_expression
+	| DEC_OP unary_expression
+	| unary_operator cast_expression
+	| SIZEOF unary_expression
+	| SIZEOF '(' type_name ')'
+	;
+
+unary_operator
+	: '&'
+	| '*'
+	| '+'
+	| '-'
+	| '~'
+	| '!'
+	;
+
+cast_expression
+	: unary_expression
+	| '(' type_name ')' cast_expression
+	;
+
+multiplicative_expression
+	: cast_expression
+	| multiplicative_expression '*' cast_expression
+	| multiplicative_expression '/' cast_expression
+	| multiplicative_expression '%' cast_expression
+	;
+
+additive_expression
+	: multiplicative_expression
+	| additive_expression '+' multiplicative_expression
+	| additive_expression '-' multiplicative_expression
+	;
+
+shift_expression
+	: additive_expression
+	| shift_expression LEFT_OP additive_expression
+	| shift_expression RIGHT_OP additive_expression
+	;
+
+relational_expression
+	: shift_expression
+	| relational_expression '<' shift_expression
+	| relational_expression '>' shift_expression
+	| relational_expression LE_OP shift_expression
+	| relational_expression GE_OP shift_expression
+	;
+
+equality_expression
+	: relational_expression
+	| equality_expression EQ_OP relational_expression
+	| equality_expression NE_OP relational_expression
+	;
+
+and_expression
+	: equality_expression
+	| and_expression '&' equality_expression
+	;
+
+exclusive_or_expression
+	: and_expression
+	| exclusive_or_expression '^' and_expression
+	;
+
+inclusive_or_expression
+	: exclusive_or_expression
+	| inclusive_or_expression '|' exclusive_or_expression
+	;
+
+logical_and_expression
+	: inclusive_or_expression
+	| logical_and_expression AND_OP inclusive_or_expression
+	;
+
+logical_or_expression
+	: logical_and_expression
+	| logical_or_expression OR_OP logical_and_expression
+	;
+
+conditional_expression
+	: logical_or_expression
+	| logical_or_expression '?' expression ':' conditional_expression
+	;
+
+assignment_expression
+	: conditional_expression
+	| unary_expression assignment_operator assignment_expression
+	;
+
+assignment_operator
+	: '='
+	| MUL_ASSIGN
+	| DIV_ASSIGN
+	| MOD_ASSIGN
+	| ADD_ASSIGN
+	| SUB_ASSIGN
+	| LEFT_ASSIGN
+	| RIGHT_ASSIGN
+	| AND_ASSIGN
+	| XOR_ASSIGN
+	| OR_ASSIGN
+	;
+
+expression
+	: assignment_expression
+	| expression ',' assignment_expression
+	;
+
+constant_expression
+	: conditional_expression
+	;
+
+declaration
+	: declaration_specifiers ';'
+	| declaration_specifiers init_declarator_list ';'
+	;
+
+
+/* Example, I don't know how to use driver!
+program :   {
+                cout << "*** RUN *** << endl;
+                cout << "Type function with list of parmeters. Parameter list can be empty" << endl
+                     << "or contain positive integers only. Examples: " << endl
+                     << " * function()" << endl
+                     << " * function(1,2,3)" << endl
+                     << "Terminate listing with ; to see parsed AST" << endl
+                     << "Terminate parser with Ctrl-D" << endl;
+                
+                cout << endl << "prompt> ";
+                
+                driver.clear();
+            }
+        | program command
+            {
+                const Command &cmd = $2;
+                cout << "command parsed, updating AST" << endl;
+                driver.addCommand(cmd);
+                cout << endl << "prompt> ";
+            }
+        | program SEMICOLON
+            {
+                cout << "*** STOP RUN ***" << endl;
+                cout << driver.str() << endl;
+            }
+        ;
+
+
+command : STRING LEFTPAR RIGHTPAR
+        {
+            string &id = $1;
+            cout << "ID: " << id << endl;
+            $$ = Command(id);
+        }
+    | STRING LEFTPAR arguments RIGHTPAR
+        {
+            string &id = $1;
+            const std::vector<uint64_t> &args = $3;
+            cout << "function: " << id << ", " << args.size() << endl;
+            $$ = Command(id, args);
+        }
+    ;
+
+arguments : NUMBER
+        {
+            uint64_t number = $1;
+            $$ = std::vector<uint64_t>();
+            $$.push_back(number);
+            cout << "first argument: " << number << endl;
+        }
+    | arguments COMMA NUMBER
+        {
+            uint64_t number = $3;
+            std::vector<uint64_t> &args = $1;
+            args.push_back(number);
+            $$ = args;
+            cout << "next argument: " << number << ", arg list size = " << args.size() << endl;
+        }
+    ;*/
+    
+%%
+
+// Bison expects us to provide implementation - otherwise linker complains
+void EzAquarii::Parser::error(const location &loc , const std::string &message) {
+        
+        // Location should be initialized inside scanner action, but is not in this example.
+        // Let's grab location directly from driver class.
+	// cout << "Error: " << message << endl << "Location: " << loc << endl;
+	
+        cout << "Error: " << message << endl << "Error location: " << driver.location() << endl;
+}
