@@ -1,14 +1,19 @@
+#include <iostream>
 #include "command.h"
 #include "symbol.h"
-
-#include <iostream>
+#include "analysis.h"
 
 using namespace EzAquarii;
 using std::cout;
 using std::endl;
 
-#include "symbol.h"
-#include "command.h"
+ASTNode root;
+//SymbolTable st;
+
+void EzAquarii::passRoot(ASTNode r){
+    root = r;    
+    root.createSymbolTable();
+}
 
 void EzAquarii::test(){
     cout << "get" << endl;

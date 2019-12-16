@@ -91,7 +91,7 @@ SPACE [ \t]
 ID [a-zA-Z][a-zA-Z0-9]*
 
 %%
-
+\/\/(.)*\n      { m_driver.increaseLocation(); }
 {INT}           { print("INT", yytext);
                 return EzAquarii::Parser::make_INT(EzAquarii::location());}
 {FLOAT}         { print("FLOAT", yytext);
@@ -200,7 +200,7 @@ ID [a-zA-Z][a-zA-Z0-9]*
                 return EzAquarii::Parser::make_ID(yytext, EzAquarii::location());}
 
 "\n"            { m_driver.increaseLocation(); }
-\/\/(.)*\n      { m_driver.increaseLocation(); }     
+
 .           { 
                 cout << "Scanner: unknown character [" << yytext << "]" << endl; 
             }

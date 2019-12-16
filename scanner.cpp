@@ -350,19 +350,19 @@ struct yy_trans_info
 	};
 static const flex_int16_t yy_accept[117] =
     {   0,
-        0,    0,   55,   53,   49,   51,   53,   34,   35,   39,
-       40,   33,   30,   38,   31,   53,   32,   47,   47,   45,
-       46,   22,   29,   21,   50,   41,   42,   37,   50,   50,
-       50,   50,   50,   50,   50,   50,   50,   43,   36,   44,
-       26,   18,   27,   16,   19,   14,   20,   15,   48,    0,
-       17,    0,    0,   47,   24,   25,   23,   50,   50,   50,
-       50,   50,   50,   50,   50,   50,    6,   50,   50,   50,
-       50,   28,   48,   48,   48,    0,   52,   50,   50,   50,
-       50,   50,   50,   50,    9,    1,   50,   50,   50,   48,
-       48,   50,   11,    3,   50,   50,    8,   50,   50,   50,
+        0,    0,   55,   53,   50,   52,   53,   35,   36,   40,
+       41,   34,   31,   39,   32,   53,   33,   48,   48,   46,
+       47,   23,   30,   22,   51,   42,   43,   38,   51,   51,
+       51,   51,   51,   51,   51,   51,   51,   44,   37,   45,
+       27,   19,   28,   17,   20,   15,   21,   16,   49,    0,
+       18,    0,    0,   48,   25,   26,   24,   51,   51,   51,
+       51,   51,   51,   51,   51,   51,    7,   51,   51,   51,
+       51,   29,   49,   49,   49,    0,    1,   51,   51,   51,
+       51,   51,   51,   51,   10,    2,   51,   51,   51,   49,
+       49,   51,   12,    4,   51,   51,    9,   51,   51,   51,
 
-       50,    4,   50,   50,    2,   50,   50,    7,   50,   50,
-       13,   10,   50,   12,    5,    0
+       51,    5,   51,   51,    3,   51,   51,    8,   51,   51,
+       14,   11,   51,   13,    6,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
@@ -691,8 +691,7 @@ YY_DECL
 	{
 #line 93 "scanner.l"
 
-
-#line 695 "scanner.cpp"
+#line 694 "scanner.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -750,317 +749,317 @@ do_action:	/* This label is used only to access EOF actions. */
 			goto yy_find_action;
 
 case 1:
+/* rule 1 can match eol */
+YY_RULE_SETUP
+#line 94 "scanner.l"
+{ m_driver.increaseLocation(); }
+	YY_BREAK
+case 2:
 YY_RULE_SETUP
 #line 95 "scanner.l"
 { print("INT", yytext);
                 return EzAquarii::Parser::make_INT(EzAquarii::location());}
 	YY_BREAK
-case 2:
+case 3:
 YY_RULE_SETUP
 #line 97 "scanner.l"
 { print("FLOAT", yytext);
                 return EzAquarii::Parser::make_FLOAT(EzAquarii::location());}
 	YY_BREAK
-case 3:
+case 4:
 YY_RULE_SETUP
 #line 99 "scanner.l"
 { print("CHAR", yytext);
                 return EzAquarii::Parser::make_CHAR(EzAquarii::location());}
 	YY_BREAK
-case 4:
+case 5:
 YY_RULE_SETUP
 #line 101 "scanner.l"
 { print("BREAK", yytext);
                 return EzAquarii::Parser::make_BREAK(EzAquarii::location());}
 	YY_BREAK
-case 5:
+case 6:
 YY_RULE_SETUP
 #line 103 "scanner.l"
 { print("CONTINUE", yytext);
                 return EzAquarii::Parser::make_CONTINUE(EzAquarii::location());}
 	YY_BREAK
-case 6:
+case 7:
 YY_RULE_SETUP
 #line 105 "scanner.l"
 { print("IF", yytext);
                 return EzAquarii::Parser::make_IF(EzAquarii::location());}
 	YY_BREAK
-case 7:
+case 8:
 YY_RULE_SETUP
 #line 107 "scanner.l"
 { print("WHILE", yytext);
                 return EzAquarii::Parser::make_WHILE(EzAquarii::location());}
 	YY_BREAK
-case 8:
+case 9:
 YY_RULE_SETUP
 #line 109 "scanner.l"
 { print("ELSE", yytext);
                 return EzAquarii::Parser::make_ELSE(EzAquarii::location());}
 	YY_BREAK
-case 9:
+case 10:
 YY_RULE_SETUP
 #line 111 "scanner.l"
 { print("FOR", yytext);
                 return EzAquarii::Parser::make_FOR(EzAquarii::location());}
 	YY_BREAK
-case 10:
+case 11:
 YY_RULE_SETUP
 #line 113 "scanner.l"
 { print("SWITCH", yytext);
                 return EzAquarii::Parser::make_SWITCH(EzAquarii::location());}
 	YY_BREAK
-case 11:
+case 12:
 YY_RULE_SETUP
 #line 115 "scanner.l"
 { print("CASE", yytext);
                 return EzAquarii::Parser::make_CASE(EzAquarii::location());}
 	YY_BREAK
-case 12:
+case 13:
 YY_RULE_SETUP
 #line 117 "scanner.l"
 { print("DEFAULT", yytext);
                 return EzAquarii::Parser::make_DEFAULT(EzAquarii::location());}
 	YY_BREAK
-case 13:
+case 14:
 YY_RULE_SETUP
 #line 119 "scanner.l"
 { print("RETURN", yytext);
                 return EzAquarii::Parser::make_RETURN(EzAquarii::location());}
 	YY_BREAK
-case 14:
+case 15:
 YY_RULE_SETUP
 #line 122 "scanner.l"
 { print("ADD_ASSIGN", yytext);/*复合赋值运算符，自增自减符，算数运算符、比较运算符*/
                 return EzAquarii::Parser::make_ADD_ASSIGN(EzAquarii::location());}
 	YY_BREAK
-case 15:
+case 16:
 YY_RULE_SETUP
 #line 124 "scanner.l"
 { print("SUB_ASSIGN", yytext);
                 return EzAquarii::Parser::make_SUB_ASSIGN(EzAquarii::location());}
 	YY_BREAK
-case 16:
+case 17:
 YY_RULE_SETUP
 #line 126 "scanner.l"
 { print("MUL_ASSIGN", yytext);
                 return EzAquarii::Parser::make_MUL_ASSIGN(EzAquarii::location());}
 	YY_BREAK
-case 17:
+case 18:
 YY_RULE_SETUP
 #line 128 "scanner.l"
 { print("DIV_ASSIGN", yytext);
                 return EzAquarii::Parser::make_DIV_ASSIGN(EzAquarii::location());}
 	YY_BREAK
-case 18:
+case 19:
 YY_RULE_SETUP
 #line 130 "scanner.l"
 { print("MOD_ASSIGN", yytext);
                 return EzAquarii::Parser::make_MOD_ASSIGN(EzAquarii::location());}
 	YY_BREAK
-case 19:
+case 20:
 YY_RULE_SETUP
 #line 132 "scanner.l"
 { print("INC_OP", yytext);
                 return EzAquarii::Parser::make_PLUS_OP(EzAquarii::location());}
 	YY_BREAK
-case 20:
+case 21:
 YY_RULE_SETUP
 #line 134 "scanner.l"
 { print("DEC_OP", yytext);
                 return EzAquarii::Parser::make_DEC_OP(EzAquarii::location());}
 	YY_BREAK
-case 21:
+case 22:
 YY_RULE_SETUP
 #line 136 "scanner.l"
 { print("AT", yytext);
                 return EzAquarii::Parser::make_AT(EzAquarii::location());}
 	YY_BREAK
-case 22:
+case 23:
 YY_RULE_SETUP
 #line 138 "scanner.l"
 { print("LT", yytext);
                 return EzAquarii::Parser::make_LT(EzAquarii::location());}
 	YY_BREAK
-case 23:
+case 24:
 YY_RULE_SETUP
 #line 140 "scanner.l"
 { print("AE", yytext);
                 return EzAquarii::Parser::make_AE(EzAquarii::location());}
 	YY_BREAK
-case 24:
+case 25:
 YY_RULE_SETUP
 #line 142 "scanner.l"
 { print("LE", yytext);
                 return EzAquarii::Parser::make_LE(EzAquarii::location());}
 	YY_BREAK
-case 25:
+case 26:
 YY_RULE_SETUP
 #line 144 "scanner.l"
 { print("EQ", yytext);
                 return EzAquarii::Parser::make_EQ(EzAquarii::location());}
 	YY_BREAK
-case 26:
+case 27:
 YY_RULE_SETUP
 #line 146 "scanner.l"
 { print("NE", yytext);
                 return EzAquarii::Parser::make_NE(EzAquarii::location());}
 	YY_BREAK
-case 27:
+case 28:
 YY_RULE_SETUP
 #line 148 "scanner.l"
 { print("AND", yytext);
                 return EzAquarii::Parser::make_AND(EzAquarii::location());}
 	YY_BREAK
-case 28:
+case 29:
 YY_RULE_SETUP
 #line 150 "scanner.l"
 { print("OR", yytext);
                 return EzAquarii::Parser::make_OR(EzAquarii::location());}
 	YY_BREAK
-case 29:
+case 30:
 YY_RULE_SETUP
 #line 153 "scanner.l"
 { print("ASSIGN_OP", yytext);/*Assignment,赋值符，将==的判断放在=前*/
                 return EzAquarii::Parser::make_ASSIGN(EzAquarii::location());}  
 	YY_BREAK
-case 30:
+case 31:
 YY_RULE_SETUP
 #line 155 "scanner.l"
 { print("PLUS_OP", yytext);
                 return EzAquarii::Parser::make_PLUS_OP(EzAquarii::location());}
 	YY_BREAK
-case 31:
+case 32:
 YY_RULE_SETUP
 #line 157 "scanner.l"
 { print("MINUS_OP", yytext);
                 return EzAquarii::Parser::make_MINUS_OP(EzAquarii::location());}
 	YY_BREAK
-case 32:
+case 33:
 YY_RULE_SETUP
 #line 159 "scanner.l"
 { print("DIV_OP", yytext);
                 return EzAquarii::Parser::make_DIV_OP(EzAquarii::location());}
 	YY_BREAK
-case 33:
+case 34:
 YY_RULE_SETUP
 #line 161 "scanner.l"
 { print("STAR_OP", yytext);
                 return EzAquarii::Parser::make_STAR_OP(EzAquarii::location());}
 	YY_BREAK
-case 34:
+case 35:
 YY_RULE_SETUP
 #line 163 "scanner.l"
 { print("MOD_OP", yytext);
                 return EzAquarii::Parser::make_MOD_OP(EzAquarii::location());}
 	YY_BREAK
-case 35:
+case 36:
 YY_RULE_SETUP
 #line 165 "scanner.l"
 { print("AND_OP", yytext);
                 return EzAquarii::Parser::make_AND_OP(EzAquarii::location());}
 	YY_BREAK
-case 36:
+case 37:
 YY_RULE_SETUP
 #line 167 "scanner.l"
 { print("OR_OP", yytext);
                 return EzAquarii::Parser::make_OR_OP(EzAquarii::location());}
 	YY_BREAK
-case 37:
+case 38:
 YY_RULE_SETUP
 #line 169 "scanner.l"
 { print("EOR_OP", yytext);
                 return EzAquarii::Parser::make_XOR_OP(EzAquarii::location());}
 	YY_BREAK
-case 38:
+case 39:
 YY_RULE_SETUP
 #line 172 "scanner.l"
 { print("COMMA", yytext);
                 return EzAquarii::Parser::make_COMMA(EzAquarii::location());}
 	YY_BREAK
-case 39:
+case 40:
 YY_RULE_SETUP
 #line 174 "scanner.l"
 { print("LP", yytext);
                 return EzAquarii::Parser::make_LP(EzAquarii::location());}
 	YY_BREAK
-case 40:
+case 41:
 YY_RULE_SETUP
 #line 176 "scanner.l"
 { print("RP", yytext);
                 return EzAquarii::Parser::make_RP(EzAquarii::location());}
 	YY_BREAK
-case 41:
+case 42:
 YY_RULE_SETUP
 #line 178 "scanner.l"
 { print("LB", yytext);
                 return EzAquarii::Parser::make_LB(EzAquarii::location());}
 	YY_BREAK
-case 42:
+case 43:
 YY_RULE_SETUP
 #line 180 "scanner.l"
 { print("RB", yytext);
                 return EzAquarii::Parser::make_RB(EzAquarii::location());}
 	YY_BREAK
-case 43:
+case 44:
 YY_RULE_SETUP
 #line 182 "scanner.l"
 { print("LC", yytext);
                 return EzAquarii::Parser::make_LC(EzAquarii::location());}
 	YY_BREAK
-case 44:
+case 45:
 YY_RULE_SETUP
 #line 184 "scanner.l"
 { print("RC", yytext);
                 return EzAquarii::Parser::make_RC(EzAquarii::location());}
 	YY_BREAK
-case 45:
+case 46:
 YY_RULE_SETUP
 #line 186 "scanner.l"
 { print("COLON", yytext);
                 return EzAquarii::Parser::make_COLON(EzAquarii::location());}
 	YY_BREAK
-case 46:
+case 47:
 YY_RULE_SETUP
 #line 188 "scanner.l"
 { print("SEMMI", yytext);
                 return EzAquarii::Parser::make_SEMMI(EzAquarii::location());}
 	YY_BREAK
-case 47:
+case 48:
 YY_RULE_SETUP
 #line 191 "scanner.l"
 { print("INT_VALUE", yytext);
                 /*long number = stol(yytext, 0, 10);*/
                 return EzAquarii::Parser::make_INT_VALUE(yytext, EzAquarii::location());}
 	YY_BREAK
-case 48:
+case 49:
 YY_RULE_SETUP
 #line 194 "scanner.l"
 { print("FLOAT_VALUE", yytext);
                 /*double number = stod(yytext);*/
                 return EzAquarii::Parser::make_FLOAT_VALUE(yytext, EzAquarii::location());}
 	YY_BREAK
-case 49:
+case 50:
 YY_RULE_SETUP
 #line 197 "scanner.l"
 { /*drop them and do nothing*/ }
 	YY_BREAK
-case 50:
+case 51:
 YY_RULE_SETUP
 #line 199 "scanner.l"
 { print("ID", yytext);
                 return EzAquarii::Parser::make_ID(yytext, EzAquarii::location());}
 	YY_BREAK
-case 51:
-/* rule 51 can match eol */
-YY_RULE_SETUP
-#line 202 "scanner.l"
-{ m_driver.increaseLocation(); }
-	YY_BREAK
 case 52:
 /* rule 52 can match eol */
 YY_RULE_SETUP
-#line 203 "scanner.l"
-{ m_driver.increaseLocation(); }     
+#line 202 "scanner.l"
+{ m_driver.increaseLocation(); }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
@@ -1078,7 +1077,7 @@ YY_RULE_SETUP
 #line 211 "scanner.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 1081 "scanner.cpp"
+#line 1080 "scanner.cpp"
 
 	case YY_END_OF_BUFFER:
 		{

@@ -5,8 +5,14 @@
 #include <vector>
 #include <list>
 #include <stdint.h>
+#include "command.h"
+#include "symbol.h"
 
 namespace EzAquarii {
+
+static SymbolTable st;
+
+void passRoot(ASTNode r);
 
 void test();
 

@@ -12,6 +12,7 @@
 
 #include <string>
 #include <stack>
+#include <list>
 #include <stdint.h>
 
 namespace EzAquarii {
@@ -20,6 +21,8 @@ class Symbol{
     public:
         // 构造一个符号项，除了
         Symbol(std::string n, int le, int t, int la, int o, int w);
+        // 打印一个符号项
+        void printSymbol();
 
     private:
         std::string name; // 变量名
@@ -41,11 +44,13 @@ class SymbolTable{
         void scopeStart();
         // 当前作用域结束
         void scopeEnd();
+        // 打印符号表
+        void printTable();
 
         
     private:
-        // 存储符号表的栈
-        std::stack<Symbol> symbol_table;
+        // 存储符号表的栈，因为stack不提供遍历，所以换使用list
+        std::list<Symbol> symbol_table;
         // 存储各个作用域的起点的栈，因为使用c++的栈实现，存储的不是偏移而是每个作用域开始时的变量个数
         std::stack<int> symbol_scope_sp; // start point
         // 存储各个作用域起始偏移量的栈

@@ -28,6 +28,7 @@
 
 #include "command.h"
 #include "symbol.h"
+#include "analysis.h"
 
 #include <iostream>
 #include <sstream>
@@ -99,51 +100,51 @@ ASTNode& ASTNode::addNode(ASTNode _node){
     return *this;
 }
 
-// void test(){
-//     cout << "test" << endl;
-// }
-
-SymbolTable st;
 void ASTNode::createSymbolTable(){
-    if(name.compare("declaration")){
+    if(name == "declaration"){
         // 可能是变量的声明或者函数的声明
         // 此声明语句的属性：类型与标签
         int type;
         int label;
         for(list<ASTNode>::iterator it = nodes.begin(); it != nodes.end(); it++){
-            if(it->name.compare("type_specifier")){
+            //cout << it->name << endl;
+            if(it->name == "type_specifier"){
+                //cout << it->name << endl;
+                cout << "get type_specifier" << endl;
                 //找到了类型
                 std::string type_str = it->nodes.begin()->name;
-                if(type_str.compare("INT")){type = INT;}
-                else if(type_str.compare("FLOAT")){type = FLOAT;}
-                else if(type_str.compare("CHAR")){type = CHAR;}
+                if(type_str == "INT"){type = INT;}
+                else if(type_str == "FLOAT"){type = FLOAT;}
+                else if(type_str == "CHAR"){type = CHAR;}
                 else{cout << "<<!!unkown type!!>>" << endl;}
-            } else if (it->name.compare("init_declarator_list")){
+            } else if (it->name == "init_declarator_list"){
                 //找到了声明符列表
+                cout << "get init_declarator_list" << endl;
                 for(list<ASTNode>::iterator it_decli = it->nodes.begin(); it_decli != it->nodes.end(); it_decli++){
                     //遍历声明符列表，it_decli指向的声明符列表里的nodes
-                    if(it_decli->name.compare("declarator")){
+                    if(it_decli->name == "declarator"   ){
                         //找到了声明符，但是还不能确定是变量还是函数
+                        cout << "get declarator" << endl;
                         //将声明符是变量还是函数还是数组的信息存放在declarator的value中
-                        if(it_decli->value.compare("value")){label = VAR;}
-                        else if(it_decli->value.compare("function")){label = FUNC;}
-                        else if(it_decli->value.compare("array")){label = ARRAY;}
+                        if(it_decli->value == "variable"){label = VAR;}
+                        else if(it_decli->value == "function"){label = FUNC;}
+                        else if(it_decli->value == "array"){label = ARRAY;}
                         else{cout << "<<!!unkown label!!>>" << endl;}
                         //声明符的第一个nodes一定是ID，终于可以创建symbol了！
-                        //st.addSymbol(it_decli->nodes.begin()->value, type, label);
+                        st.addSymbol(it_decli->nodes.begin()->value, type, label);
                     }
                 }
             }
         }
-    } else if (name.compare("function_definition")){
+    } else if (name == "function_definition"){
         // 函数的定义
+        cout << "get function_definition" << endl;
     }else{
         // 啥也不是，递归的寻找子树中的声明语句
         for(list<ASTNode>::iterator it = nodes.begin(); it != nodes.end(); it++){
             it->createSymbolTable();
         }
-    }
-    
+    } 
 }
 
 Command::Command(const std::string &name, const std::vector<uint64_t> arguments) :

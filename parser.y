@@ -43,6 +43,7 @@
     #include <stdint.h>
     #include "command.h"
     #include "symbol.h"
+    #include "analysis.h"
 
     using namespace std;
 
@@ -117,7 +118,7 @@ program:
     translation_unit
         {$$ = ASTNode("program"); $$.nodes = $1.nodes; $$.display();
         cout << "there are totally " <<driver.location() << "chars in this program" << endl;
-        test();}
+        passRoot($$);}
     ;
 
 translation_unit:
@@ -136,9 +137,9 @@ external_declaration:
 
 declaration:
     declaration_specifiers SEMMI 
-        {$$ = ASTNode("declaration"); $$.addNode($1).addNode(ASTNode("SEMMI", ";"));}|
+        {$$ = ASTNode("declaration"); $$.addNode($1)/*.addNode(ASTNode("SEMMI", ";"))*/;}|
     declaration_specifiers init_declarator_list SEMMI 
-        {$$ = ASTNode("declaration"); $$.addNode($1).addNode($2).addNode(ASTNode("SEMMI", ";"));}
+        {$$ = ASTNode("declaration"); $$.addNode($1).addNode($2)/*.addNode(ASTNode("SEMMI", ";"))*/;}
     ;
 
 declaration_list:
@@ -151,27 +152,27 @@ declaration_list:
 init_declarator_list:
     init_declarator {$$ = ASTNode("init_declarator_list"); $$.addNode($1);}|
 	init_declarator_list COMMA init_declarator
-        {$$ = $1; $$.addNode(ASTNode("COMMA", ",")).addNode($3);}
+        {$$ = $1; $$/*.addNode(ASTNode("COMMA", ","))*/.addNode($3);}
 	;
 
 init_declarator:
 	declarator {$$ = $1;}|
 	declarator ASSIGN initializer
-        {$$ = ASTNode("init_declarator"); $$.addNode($1).addNode(ASTNode("ASSIGN", "=")).addNode($3);}
+        {$$ = $1; $$.addNode(ASTNode("ASSIGN", "=")).addNode($3);}
 	;
 
 initializer: 
-    assignment_expression {$$ = ASTNode("initializer"); $$.addNode($1);}|
+    assignment_expression {$$ = ASTNode("initializer"); $$.nodes = $1.nodes;}|
 	LC initializer_list RC
-        {$$ = ASTNode("initializer"); $$.addNode(ASTNode("LC", "(")).addNode($2).addNode(ASTNode("RC", ")"));}|
+        {$$ = ASTNode("initializer"); $$.addNode(ASTNode("LC", "{")).addNode($2).addNode(ASTNode("RC", "}"));}|
 	LC initializer_list COMMA RC
-        {$$ = ASTNode("initializer"); $$.addNode(ASTNode("LC", "(")).addNode($2).addNode(ASTNode("COMMA",",")).addNode(ASTNode("RC", ")"));}
+        {$$ = ASTNode("initializer"); $$.addNode(ASTNode("LC", "{")).addNode($2).addNode(ASTNode("RC", "}"));}
 	;
 
 initializer_list: 
     initializer {$$ = ASTNode("initializer_list"); $$.addNode($1);}|
         initializer_list COMMA initializer
-        {$$ = $1; $$.addNode(ASTNode("COMMA", ",")).addNode($3);}
+        {$$ = $1; $$.addNode($3);}
 	;
 
 declarator:
@@ -204,7 +205,7 @@ direct_declarator:
         $$.addNode(ASTNode("LP", "(")).addNode($2).addNode(ASTNode("RP", ")"));} |
         direct_declarator LB constant_expression RB
         {$$ = ASTNode("direct_declarator", "array"); $$.nodes = $1.nodes;/*这里的nodes应该是ID*/
-        $$.addNode(ASTNode("LB", "[")).addNode($3).addNode(ASTNode("RB", "]"));} |
+        $$.addNode($3);} |
         direct_declarator LB RB
         {$$ = ASTNode("direct_declarator", "array"); $$.nodes = $1.nodes;/*这里的nodes应该是ID*/
         $$.addNode(ASTNode("LB", "[")).addNode(ASTNode("RB", "]"));} |
@@ -226,7 +227,7 @@ parameter_type_list:
 parameter_list: 
     parameter_declaration {$$ = ASTNode("parameter_list"); $$.addNode($1);}|
 	parameter_list COMMA parameter_declaration
-        {$$ = $1; $$.addNode(ASTNode("COMMA", ",")).addNode($3);}
+        {$$ = $1; $$.addNode($3);}
 	;
 
 parameter_declaration: 
@@ -239,7 +240,7 @@ parameter_declaration:
 identifier_list: 
     ID  {$$ = ASTNode("identifier_list"); $$.addNode(ASTNode("ID", $1));}|
 	identifier_list COMMA ID
-        {$$ = $1; $$.addNode(ASTNode("COMMA", ",")).addNode($3);}
+        {$$ = $1; $$.addNode($3);}
     ;
 
 compound_statement:
@@ -271,7 +272,7 @@ primary_expression:
     ID 
         {$$ = ASTNode("primary_expression"); $$.addNode(ASTNode("ID", $1));}|
 	constant 
-        {$$ = ASTNode("primary_expression"); $$.addNode($1);}|
+        {$$ = $1; $$.addNode($1);}|
 	/*STRING_LITERAL*/
 	LP expression RP 
         {$$ = ASTNode("primary_expression"); 
@@ -280,7 +281,7 @@ primary_expression:
 
 postfix_expression: 
     primary_expression 
-        {$$ = ASTNode("postfix_expression"); $$.nodes = $1.nodes;}|
+        {$$ = $1;}|
 	postfix_expression LB expression RB 
         {$$ = ASTNode("postfix_expression"); 
         $$.addNode($1).addNode(ASTNode("LB", "[")).addNode($3).addNode(ASTNode("RB", "]"));}|
@@ -300,9 +301,9 @@ postfix_expression:
 
 argument_expression_list: 
     assignment_expression
-        {$$ = ASTNode("argument_expression_list"); $$.nodes = $1.nodes;}|
+        {$$ = $1;}|
 	argument_expression_list COMMA assignment_expression
-        {$$ = $1; $$.addNode(ASTNode("COMMA", ",")).addNode($3);}
+        {$$ = $1; $$.addNode($3);}
 	;
 
 unary_expression: 
@@ -464,7 +465,7 @@ expression:
         {$$ = ASTNode("expression"); $$.nodes = $1.nodes;}|
 	expression COMMA assignment_expression
         {$$ = ASTNode("expression"); 
-        $$ = $1; $$.addNode(ASTNode("COMMA", "，")).addNode($3);}
+        $$ = $1; $$.addNode($3);}
 	;
 
 constant_expression: 
@@ -505,25 +506,26 @@ iteration_statement:
 	;
 
 jump_statement:
+    /*删除了句末的分号*/
 	CONTINUE SEMMI
         {$$ = ASTNode("jump_statement"); 
-        $$.addNode(ASTNode("CONTINUE", "continue")).addNode(ASTNode("SEMMI", ";"));}|
+        $$.addNode(ASTNode("CONTINUE", "continue"))/*.addNode(ASTNode("SEMMI", ";"))*/;}|
 	BREAK SEMMI
         {$$ = ASTNode("jump_statement"); 
-        $$.addNode(ASTNode("BREAK", "break")).addNode(ASTNode("SEMMI", ";"));}|
+        $$.addNode(ASTNode("BREAK", "break"));}|
 	RETURN SEMMI
         {$$ = ASTNode("jump_statement"); 
-        $$.addNode(ASTNode("RETURN", "return")).addNode(ASTNode("SEMMI", ";"));}|
+        $$.addNode(ASTNode("RETURN", "return"));}|
 	RETURN expression SEMMI
         {$$ = ASTNode("jump_statement"); 
-        $$.addNode(ASTNode("RETURN", "return")).addNode($2).addNode(ASTNode("SEMMI", ";"));}
+        $$.addNode(ASTNode("RETURN", "return"));}
 	;
 
 expression_statement: 
-    SEMMI {$$ = ASTNode("expression_statement"); $$.addNode(ASTNode("SEMMI", ";"));}|
+    SEMMI {$$ = ASTNode("expression_statement");;}|
 	expression SEMMI
         {$$ = ASTNode("expression_statement"); 
-        $$.addNode($1).addNode(ASTNode("SEMMI", ";"));}
+        $$.addNode($1);}
 	;
 
 statement: 
