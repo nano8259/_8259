@@ -42,6 +42,7 @@
     #include <vector>
     #include <stdint.h>
     #include "command.h"
+    #include "symbol.h"
 
     using namespace std;
 
@@ -115,7 +116,8 @@
 program:
     translation_unit
         {$$ = ASTNode("program"); $$.nodes = $1.nodes; $$.display();
-        cout << "there are totally " <<driver.location() << "chars in this program" << endl;}
+        cout << "there are totally " <<driver.location() << "chars in this program" << endl;
+        test();}
     ;
 
 translation_unit:
@@ -153,7 +155,7 @@ init_declarator_list:
 	;
 
 init_declarator:
-	declarator {$$ = ASTNode("init_declarator"); $$.addNode($1);}|
+	declarator {$$ = $1;}|
 	declarator ASSIGN initializer
         {$$ = ASTNode("init_declarator"); $$.addNode($1).addNode(ASTNode("ASSIGN", "=")).addNode($3);}
 	;
@@ -168,12 +170,12 @@ initializer:
 
 initializer_list: 
     initializer {$$ = ASTNode("initializer_list"); $$.addNode($1);}|
-	initializer_list COMMA initializer
+        initializer_list COMMA initializer
         {$$ = $1; $$.addNode(ASTNode("COMMA", ",")).addNode($3);}
 	;
 
 declarator:
-    direct_declarator {$$ = ASTNode("declarator"); $$.addNode($1);}
+    direct_declarator {$$ = ASTNode("declarator", $1.value); /*$$.addNode($1);*/ $$.nodes = $1.nodes;}
     ;
 
 function_definition:
@@ -184,7 +186,7 @@ function_definition:
     ;
 
 declaration_specifiers:
-    type_specifier {$$ = ASTNode("declaration_specifiers"); $$.addNode($1);}
+    type_specifier {$$ = $1;}
     ;
 
 type_specifier:
@@ -194,26 +196,27 @@ type_specifier:
     ;
 
 direct_declarator:
+    /*将声明符是变量还是函数还是数组的信息存放在declarator的value中*/
     ID 
-        {$$ = ASTNode("direct_declarator"); $$.addNode(ASTNode("ID", $1));}|
+        {$$ = ASTNode("direct_declarator", "variable"); $$.addNode(ASTNode("ID", $1));}|
     LP declarator RP
         {$$ = ASTNode("direct_declarator"); 
         $$.addNode(ASTNode("LP", "(")).addNode($2).addNode(ASTNode("RP", ")"));} |
-    direct_declarator LB constant_expression RB
-        {$$ = ASTNode("direct_declarator"); 
-        $$.addNode($1).addNode(ASTNode("LB", "[")).addNode($3).addNode(ASTNode("RB", "]"));} |
-	direct_declarator LB RB
-        {$$ = ASTNode("direct_declarator"); 
-        $$.addNode($1).addNode(ASTNode("LB", "[")).addNode(ASTNode("RB", "]"));} |
+        direct_declarator LB constant_expression RB
+        {$$ = ASTNode("direct_declarator", "array"); $$.nodes = $1.nodes;/*这里的nodes应该是ID*/
+        $$.addNode(ASTNode("LB", "[")).addNode($3).addNode(ASTNode("RB", "]"));} |
+        direct_declarator LB RB
+        {$$ = ASTNode("direct_declarator", "array"); $$.nodes = $1.nodes;/*这里的nodes应该是ID*/
+        $$.addNode(ASTNode("LB", "[")).addNode(ASTNode("RB", "]"));} |
 	direct_declarator LP parameter_type_list RP
-        {$$ = ASTNode("direct_declarator"); 
-        $$.addNode($1).addNode(ASTNode("LP", "(")).addNode($3).addNode(ASTNode("RP", ")"));} |
+        {$$ = ASTNode("direct_declarator", "function"); $$.nodes = $1.nodes;/*这里的nodes应该是ID*/
+        $$.addNode(ASTNode("LP", "(")).addNode($3).addNode(ASTNode("RP", ")"));} |
 	direct_declarator LP identifier_list RP
-        {$$ = ASTNode("direct_declarator"); 
-        $$.addNode($1).addNode(ASTNode("LP", "(")).addNode($3).addNode(ASTNode("RP", ")"));} |
+        {$$ = ASTNode("direct_declarator", "function"); $$.nodes = $1.nodes;/*这里的nodes应该是ID*/
+        $$.addNode(ASTNode("LP", "(")).addNode($3).addNode(ASTNode("RP", ")"));} |
 	direct_declarator LP RP
-        {$$ = ASTNode("direct_declarator"); 
-        $$.addNode($1).addNode(ASTNode("LP", "(")).addNode(ASTNode("RP", ")"));}
+        {$$ = ASTNode("direct_declarator", "function"); $$.nodes = $1.nodes;/*这里的nodes应该是ID*/
+        $$.addNode(ASTNode("LP", "(")).addNode(ASTNode("RP", ")"));}
     ;
 
 parameter_type_list: 

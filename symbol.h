@@ -1,5 +1,6 @@
 #ifndef SYMBOL_H
 #define SYMBOL_H
+
 // 定义类型
 #define INT 1
 #define FLOAT 2
@@ -7,7 +8,7 @@
 // 定义标记
 #define FUNC 1
 #define VAR 2
-#define CONST 3
+#define ARRAY 3
 
 #include <string>
 #include <stack>
@@ -34,6 +35,7 @@ class SymbolTable{
     public:
         SymbolTable();
         // 添加一个符号项
+        void addSymbol(std::string n, int t, int la);
         void addSymbol(Symbol s);
         // 新的作用域开始
         void scopeStart();
@@ -54,6 +56,9 @@ class SymbolTable{
         int level_now;
         
 };
-}
 
+//若在这里声明全局变量，则会出现重复定义错误
+//SymbolTable st;
+
+}
 #endif // SYMBOL_H

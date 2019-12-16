@@ -31,6 +31,7 @@
 #include "parser.hpp"
 #include "interpreter.h"
 #include <fstream>
+#include "symbol.h"
 
 
 using namespace EzAquarii;
@@ -39,6 +40,7 @@ using namespace std;
 int main(int argc, char *argv[]) {
     string filename = argv[1];
     Interpreter i;
+    //extern SymbolTable st;
     if(filename.empty()){
         cout << "please input a file name" << endl; 
         return 0;

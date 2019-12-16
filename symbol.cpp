@@ -1,4 +1,4 @@
-#include "symbol.hpp"
+#include "symbol.h"
 
 #include <iostream>
 #include <sstream>
@@ -14,6 +14,31 @@ Symbol::Symbol(std::string n, int le, int t, int la, int o, int w)
 SymbolTable::SymbolTable()
 :level_now(0), offset_now(0)
 {    
+}
+
+void SymbolTable::addSymbol(std::string n, int t, int la){
+    int wi = 0;
+    switch (t)
+    {
+    case INT:
+        wi = 4;
+        break;
+    case FLOAT:
+        wi = 4;
+        break;
+    case CHAR:
+        wi = 2;
+        break;
+    default:
+        break;
+    }
+    Symbol s = Symbol(n, level_now, t, la, offset_now, wi);
+    offset_now += wi;
+    addSymbol(s);
+}
+
+void SymbolTable::addSymbol(Symbol s){
+    symbol_table.push(s);
 }
 
 void SymbolTable::scopeStart(){

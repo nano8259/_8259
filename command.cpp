@@ -27,6 +27,7 @@
  */
 
 #include "command.h"
+#include "symbol.h"
 
 #include <iostream>
 #include <sstream>
@@ -96,6 +97,53 @@ void ASTNode::display(std::vector<int> v){
 ASTNode& ASTNode::addNode(ASTNode _node){
     nodes.push_back(_node);
     return *this;
+}
+
+// void test(){
+//     cout << "test" << endl;
+// }
+
+SymbolTable st;
+void ASTNode::createSymbolTable(){
+    if(name.compare("declaration")){
+        // 可能是变量的声明或者函数的声明
+        // 此声明语句的属性：类型与标签
+        int type;
+        int label;
+        for(list<ASTNode>::iterator it = nodes.begin(); it != nodes.end(); it++){
+            if(it->name.compare("type_specifier")){
+                //找到了类型
+                std::string type_str = it->nodes.begin()->name;
+                if(type_str.compare("INT")){type = INT;}
+                else if(type_str.compare("FLOAT")){type = FLOAT;}
+                else if(type_str.compare("CHAR")){type = CHAR;}
+                else{cout << "<<!!unkown type!!>>" << endl;}
+            } else if (it->name.compare("init_declarator_list")){
+                //找到了声明符列表
+                for(list<ASTNode>::iterator it_decli = it->nodes.begin(); it_decli != it->nodes.end(); it_decli++){
+                    //遍历声明符列表，it_decli指向的声明符列表里的nodes
+                    if(it_decli->name.compare("declarator")){
+                        //找到了声明符，但是还不能确定是变量还是函数
+                        //将声明符是变量还是函数还是数组的信息存放在declarator的value中
+                        if(it_decli->value.compare("value")){label = VAR;}
+                        else if(it_decli->value.compare("function")){label = FUNC;}
+                        else if(it_decli->value.compare("array")){label = ARRAY;}
+                        else{cout << "<<!!unkown label!!>>" << endl;}
+                        //声明符的第一个nodes一定是ID，终于可以创建symbol了！
+                        //st.addSymbol(it_decli->nodes.begin()->value, type, label);
+                    }
+                }
+            }
+        }
+    } else if (name.compare("function_definition")){
+        // 函数的定义
+    }else{
+        // 啥也不是，递归的寻找子树中的声明语句
+        for(list<ASTNode>::iterator it = nodes.begin(); it != nodes.end(); it++){
+            it->createSymbolTable();
+        }
+    }
+    
 }
 
 Command::Command(const std::string &name, const std::vector<uint64_t> arguments) :

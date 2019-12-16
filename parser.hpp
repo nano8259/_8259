@@ -51,6 +51,7 @@
     #include <vector>
     #include <stdint.h>
     #include "command.h"
+    #include "symbol.h"
 
     using namespace std;
 
@@ -59,7 +60,7 @@
         class Interpreter;
     }
 
-#line 63 "parser.hpp"
+#line 64 "parser.hpp"
 
 # include <cassert>
 # include <cstdlib> // std::abort
@@ -175,7 +176,7 @@
 
 #line 37 "parser.y"
 namespace  EzAquarii  {
-#line 179 "parser.hpp"
+#line 180 "parser.hpp"
 
 
 
@@ -2260,7 +2261,7 @@ switch (yytype)
 
 #line 37 "parser.y"
 } //  EzAquarii 
-#line 2264 "parser.hpp"
+#line 2265 "parser.hpp"
 
 
 

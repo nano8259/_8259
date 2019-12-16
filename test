@@ -1,5 +1,6 @@
 int x = 1;
-float y;
+float y,z;
+int xs[5] = {0};
 int print();
 
 int main(int c, float b){
