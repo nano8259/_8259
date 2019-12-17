@@ -57,6 +57,7 @@ class Symbol{
         void printSymbol();
         // 添加为函数项添加一个参数
         void addParameter(Type);
+        std::string getName();
 
         int width; // 宽度
         // 以下的两个是对于函数而言的，应该有更好的实现方法，但是想不太到
@@ -93,6 +94,8 @@ class SymbolTable{
         void printTable();
         // 返回符号表的最后一个符号的引用
         Symbol& getLast();
+        // 从后向前以名字检索符号表，检索到后返回Symbol的指针
+        Symbol* search(std::string s);
         // 存储符号表的栈，因为stack不提供遍历，所以换使用list
         std::vector<Symbol> symbol_table;
     private:

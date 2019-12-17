@@ -524,7 +524,7 @@ expression_statement:
     SEMMI {$$ = ASTNode("expression_statement");;}|
 	expression SEMMI
         {$$ = ASTNode("expression_statement"); 
-        $$.addNode($1);}
+        $$.nodes = $1.nodes;}
 	;
 
 statement: 

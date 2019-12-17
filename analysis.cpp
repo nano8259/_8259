@@ -3,9 +3,13 @@
 #include "symbol.h"
 #include "analysis.h"
 
+#include <regex>
+
 using namespace EzAquarii;
 using std::cout;
 using std::endl;
+using std::regex_match;
+using std::regex;
 
 ASTNode root;
 //SymbolTable st;
@@ -16,6 +20,7 @@ void EzAquarii::passRoot(ASTNode r){
 }
 
 void EzAquarii::findSymbol(ASTNode n){
+    // 这个名字不合适，因为找引用的时候也用的是这个函数
     if(n.name == "declaration"){
         createSymbolDeclaration(n);
     }else if (n.name == "function_definition"){
@@ -30,7 +35,10 @@ void EzAquarii::findSymbol(ASTNode n){
             findSymbol(n.nodes[i]);
         }
         st.scopeEnd();
-    }else{ // 不是以上节点，则继续分析其子节点
+    }else if (n.name == "expression_statement"){
+        analysisExpression(n);
+    }
+    else{ // 不是以上节点，则继续分析其子节点
         for(int i = 0; i < n.nodes.size(); i++){
             findSymbol(n.nodes[i]);
         }
@@ -123,6 +131,47 @@ void EzAquarii::createFunctionDeclarationParameters(ASTNode n){
 void EzAquarii::createFunctionDefinition(ASTNode n){
     cout << "get function_definition" << endl;
 
+}
+
+void EzAquarii::analysisExpression(ASTNode n){
+    // n是name为expression_statement/..._expression的节点，子节点为表达式语句中的内容
+    // 遍历这个表达式语句并且对每个使用的标识符查看是否存在未声明错误
+    if(n.name == "ID"){
+        cout << "HERE" << n.value << endl;
+        Symbol* sp = st.search(n.value);
+        if(sp == NULL){
+            printErrorInfo(101); // 使用未定义的变量
+        }
+    }
+    for(int i = 0; i < n.nodes.size(); i++){
+        analysisExpression(n.nodes[i]);
+    }
+}
+
+std::map<int, std::string> err_info = {
+    {100, "未知语义错误"},
+    {101, "使用未定义的变量"},
+    {102, "调用未定义或未声明的函数"},
+    {103, "变量出现重复定义"},
+    {104, "函数出现重复定义"},
+    {105, "赋值号两边表达式类型不匹配"},
+    {106, "操作数类型不匹配"},
+    {107, "操作数类型与操作符不匹配"},
+    {108, "return语句返回值的类型与函数定义的返回类型不匹配"},
+    {109, "函数调用时实参与形参的数目或类型不匹配"},
+    {110, "对非数组型变量使用\"[...]\"(数组访问)操作符"},
+    {111, "对普通变量使用\"(...)\"或\"()\"(函数调用)操作符"},
+    {112, "数组访问操作符\"[...]\"中出现非整型数字"},
+    {113, "尝试声明已经声明过的函数"},
+    {114, "函数的定义与声明不符"},
+
+};
+
+void EzAquarii::printErrorInfo(int n){
+    std::string err_info_str; // 用来放报错的行数
+
+    err_info_str += "ERROR";
+    cout << err_info_str << n << err_info[n] << endl;
 }
 
 void EzAquarii::test(){

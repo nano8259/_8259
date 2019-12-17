@@ -1534,7 +1534,7 @@ namespace  EzAquarii  {
   case 118:
 #line 526 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("expression_statement"); 
-        yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[1].value.as < EzAquarii::ASTNode > ());}
+        yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[1].value.as < EzAquarii::ASTNode > ().nodes;}
 #line 1539 "parser.cpp"
     break;
 

@@ -1,21 +1,23 @@
 int x = 1;
 float y,z;
-int xs[5] = {0};
-int xss[5][5];
-int xsss[5][5][5];
+//int xs[5] = {0};
+//int xss[5][5];
+//int xsss[5][5][5];
 int print(int i, int j);
 
 int main(){
-    int a = 1;
-    int y = 0;
+    //int a = 1;
+    //int y = 0;
     c = x + 1;
-    for(x=1; i < 10; i+=1){
-        int scope2;
-        z = x + c;
-        if(z > 5){
-            break;
-        }
-    }
+    print1();
+    print(x, y);
+    //for(x=1; i < 10; i+=1){
+    //    int scope2;
+    //    z = x + c;
+    //    if(z > 5){
+    //        break;
+    //    }
+    //}
 }
 
 int print(int x1, int x2){

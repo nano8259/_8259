@@ -5,6 +5,7 @@
 #include <vector>
 #include <list>
 #include <stdint.h>
+#include <map>
 #include "command.h"
 #include "symbol.h"
 
@@ -19,6 +20,10 @@ void createSymbolDeclaration(ASTNode n);
 void createFunctionDeclarationParameters(ASTNode n);
 void createFunctionDefinition(ASTNode n);
 void createSymbolTable(ASTNode n);
+
+void analysisExpression(ASTNode n);
+
+void printErrorInfo(int n);
 
 void test();
 

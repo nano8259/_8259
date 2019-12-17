@@ -150,6 +150,10 @@ void Symbol::addParameter(Type t){
     parameter_list.push_back(t);
 }
 
+string Symbol::getName(){
+    return name;
+}
+
 SymbolTable::SymbolTable()
 :level_now(0), offset_now(0)
 {    
@@ -240,4 +244,13 @@ void SymbolTable::printTable(){
 
 Symbol& SymbolTable::getLast(){
     return symbol_table[symbol_table.size() - 1];
+}
+
+Symbol* SymbolTable::search(std::string s){
+    for(int i = symbol_table.size() - 1; i > -1; i--){
+        if(symbol_table[i].getName() == s){
+            return &symbol_table[i];
+        }
+    }
+    return NULL;
 }
