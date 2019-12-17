@@ -15,8 +15,9 @@ static SymbolTable st;
 void passRoot(ASTNode r);
 
 void findSymbol(ASTNode n);
-void createSymbolDeclar(ASTNode n);
-void createSymbolFunc(ASTNode n);
+void createSymbolDeclaration(ASTNode n);
+void createFunctionDeclarationParameters(ASTNode n);
+void createFunctionDefinition(ASTNode n);
 void createSymbolTable(ASTNode n);
 
 void test();

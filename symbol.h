@@ -52,10 +52,16 @@ class Symbol{
         // 构造一个数组
         Symbol(std::string n, int lev, Type t, int la, int o, int len);
         Symbol(std::string n, int lev, Type t, int la, int o);
+        Symbol();
         // 打印一个符号项
         void printSymbol();
+        // 添加为函数项添加一个参数
+        void addParameter(Type);
 
         int width; // 宽度
+        // 以下的两个是对于函数而言的，应该有更好的实现方法，但是想不太到
+        std::vector<Type> parameter_list; // 对于函数的参数列表
+        bool isDefined; // 对于函数的符号表项
 
     private:
         std::string name; // 变量名
@@ -71,13 +77,13 @@ class SymbolTable{
     public:
         SymbolTable();
         // 添加一个符号项
-        void addSymbol(Symbol s);
+        Symbol addSymbol(Symbol s);
         // 变量、函数的添加函数
-        void addSymbol(std::string n, Type::PlainType t, int la);
+        Symbol addSymbol(std::string n, Type::PlainType t, int la);
         // 数组的添加函数
-        void addSymbol(std::string n, Type::PlainType t, int la, int len); // 使用基本类型的数组
-        void addSymbol(std::string n, Type t, int la, int len); 
-        void addSymbol(std::string n, Type t, int la);
+        Symbol addSymbol(std::string n, Type::PlainType t, int la, int len); // 使用基本类型的数组
+        Symbol addSymbol(std::string n, Type t, int la, int len); 
+        Symbol addSymbol(std::string n, Type t, int la);
 
         // 新的作用域开始
         void scopeStart();
@@ -85,11 +91,12 @@ class SymbolTable{
         void scopeEnd();
         // 打印符号表
         void printTable();
-
-        
-    private:
+        // 返回符号表的最后一个符号的引用
+        Symbol& getLast();
         // 存储符号表的栈，因为stack不提供遍历，所以换使用list
         std::vector<Symbol> symbol_table;
+    private:
+        
         // 存储各个作用域的起点的栈，因为使用c++的栈实现，存储的不是偏移而是每个作用域开始时的变量个数
         std::stack<int> symbol_scope_sp; // start point
         // 存储各个作用域起始偏移量的栈

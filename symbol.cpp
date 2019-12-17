@@ -96,6 +96,10 @@ void Type::setWidth(){
     }
 }
 
+Symbol::Symbol(){
+
+}
+
 Symbol::Symbol(std::string n, int le, Type::PlainType t, int la, int o)
 :name(n), level(le), label(la), offset(o){
     type = Type(t);
@@ -122,9 +126,15 @@ Symbol::Symbol(std::string n, int lev, Type t, int la, int o)
 void Symbol::printSymbol(){
     string type_str = type.typeString();
     string label_str;
+    string parameter_str;
     switch (label)
     {
-    case FUNC: label_str = "func";
+    case FUNC: 
+        label_str = "func";
+        for(int i = 0; i < parameter_list.size(); i++){
+            parameter_str += parameter_list[i].typeString();
+            parameter_str += " ";
+        }
         break;
     case VAR: label_str = "var";
         break;
@@ -133,7 +143,11 @@ void Symbol::printSymbol(){
     default:
         break;
     }
-    cout << name << "\t" << level << "\t" << type_str << "\t" << label_str << "\t" << offset << "\t" << width << endl;
+    cout << name << "\t" << level << "\t" << type_str << "\t" << label_str << "\t" << offset << "\t" << width << "\t" << parameter_str << endl;
+}
+
+void Symbol::addParameter(Type t){
+    parameter_list.push_back(t);
 }
 
 SymbolTable::SymbolTable()
@@ -141,51 +155,59 @@ SymbolTable::SymbolTable()
 {    
 }
 
-void SymbolTable::addSymbol(std::string n, Type::PlainType t, int la){
+Symbol SymbolTable::addSymbol(std::string n, Type::PlainType t, int la){
     int wi = 0;
+    Symbol s;
     if (la == FUNC){
         // 如果是函数的话，则不应该有偏移量，直接向width传入0
-        Symbol s = Symbol(n, level_now, t, la, offset_now, 0);
+        s = Symbol(n, level_now, t, la, offset_now, 0);
         addSymbol(s);
     }
     else if (la == VAR){ // 是基本类型，使用基本类型的构造方法
-        Symbol s = Symbol(n, level_now, t, la, offset_now);
+        s = Symbol(n, level_now, t, la, offset_now);
         wi = s.width;
         addSymbol(s);
     }else if (la == ARRAY){ // 是数组，使用数组的构造方法
-        Symbol s = Symbol(n, level_now, t, la, offset_now);
+        s = Symbol(n, level_now, t, la, offset_now);
     }
     offset_now += wi;
+    return s;
 }
 
-void SymbolTable::addSymbol(std::string n, Type::PlainType t, int la, int len){
-    addSymbol(n, Type(t), la, len);
+Symbol SymbolTable::addSymbol(std::string n, Type::PlainType t, int la, int len){
+    return addSymbol(n, Type(t), la, len);
+    
 }
 
-void SymbolTable::addSymbol(std::string n, Type t, int la, int len){
+Symbol SymbolTable::addSymbol(std::string n, Type t, int la, int len){
     int wi = 0;
+    Symbol s;
     if (la == ARRAY){ // 是数组，使用数组的构造方法
         Symbol s = Symbol(n, level_now, t, la, offset_now, len);
         wi = s.width;
         addSymbol(s);
     }
     offset_now += wi;
+    return s;
 }
 
-void SymbolTable::addSymbol(std::string n, Type t, int la){
+Symbol SymbolTable::addSymbol(std::string n, Type t, int la){
     int wi = 0;
+    Symbol s;
     if (la == ARRAY){ // 是数组，使用数组的构造方法
         Symbol s = Symbol(n, level_now, t, la, offset_now);
         wi = s.width;
         addSymbol(s);
     }
     offset_now += wi;
+    return s;
 }
 
-void SymbolTable::addSymbol(Symbol s){
+Symbol SymbolTable::addSymbol(Symbol s){
     symbol_table.push_back(s);
     // 打印表
     printTable();
+    return s;
 }
 
 void SymbolTable::scopeStart(){
@@ -210,8 +232,12 @@ void SymbolTable::scopeEnd(){
 }
 
 void SymbolTable::printTable(){
-    cout << "name\tlevel\ttype\tlable\toffset\twidth" << endl;
+    cout << "name\tlevel\ttype\tlable\toffset\twidth\tparameters" << endl;
     for(int i = 0; i < symbol_table.size(); i++){
         symbol_table[i].printSymbol();
     }
+}
+
+Symbol& SymbolTable::getLast(){
+    return symbol_table[symbol_table.size() - 1];
 }
