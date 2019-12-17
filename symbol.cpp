@@ -28,7 +28,6 @@ Type::Type(PlainType t, int l)
 
 Type::Type(Type t, int l)
 :type_type(ARRAY_T), length(l){
-    cout <<  "here" << endl;
     type_list.push_back(t);
     setWidth();
 }
@@ -36,8 +35,7 @@ Type::Type(Type t, int l)
 string Type::typeString(){
     string type_str;
     if(type_type == Type::TypeType::PLAIN){
-        switch (plain_type)
-        {
+        switch (plain_type){
         case Type::PlainType::INT:
             type_str = "int";
             break;
@@ -51,7 +49,24 @@ string Type::typeString(){
             break;
         }
     }else if (type_type == Type::TypeType::ARRAY_T){
-        type_str = "array";
+        if(type_list[0].type_type == ARRAY_T){
+            type_str = "array";
+        }else{
+            switch (plain_type){
+            case Type::PlainType::INT:
+                type_str = "int";
+                break;
+            case Type::PlainType::FLOAT:
+                type_str = "float";
+                break;
+            case Type::PlainType::CHAR:
+                type_str = "char";
+                break;                    
+            default:
+                break;
+            }
+        }
+
     }
     return type_str;
 }
@@ -195,6 +210,7 @@ void SymbolTable::scopeEnd(){
 }
 
 void SymbolTable::printTable(){
+    cout << "name\tlevel\ttype\tlable\toffset\twidth" << endl;
     for(int i = 0; i < symbol_table.size(); i++){
         symbol_table[i].printSymbol();
     }

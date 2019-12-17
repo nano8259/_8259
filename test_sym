@@ -3,4 +3,14 @@ float y,z;
 int xs[5] = {0};
 int xss[5][5];
 int xsss[5][5][5][5][5][5][5][5][5];
-int print();
+int print(int i, int j);
+
+int main(){
+    int a = 1;
+    int y = 0;
+    y = x + 1;
+}
+
+int print(int x1, int x2){
+    ;
+}

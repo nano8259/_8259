@@ -203,21 +203,20 @@ direct_declarator:
     LP declarator RP
         {$$ = ASTNode("direct_declarator"); 
         $$.addNode(ASTNode("LP", "(")).addNode($2).addNode(ASTNode("RP", ")"));} |
-        direct_declarator LB constant_expression RB
+    direct_declarator LB constant_expression RB
         {$$ = ASTNode("direct_declarator", "array"); $$.nodes = $1.nodes;/*这里的nodes应该是ID*/
         $$.addNode($3);} |
-        direct_declarator LB RB
+    direct_declarator LB RB
         {$$ = ASTNode("direct_declarator", "array"); $$.nodes = $1.nodes;/*这里的nodes应该是ID*/
         $$.addNode(ASTNode("LB", "[")).addNode(ASTNode("RB", "]"));} |
 	direct_declarator LP parameter_type_list RP
         {$$ = ASTNode("direct_declarator", "function"); $$.nodes = $1.nodes;/*这里的nodes应该是ID*/
-        $$.addNode(ASTNode("LP", "(")).addNode($3).addNode(ASTNode("RP", ")"));} |
+        $$.addNode($3);} |
 	direct_declarator LP identifier_list RP
         {$$ = ASTNode("direct_declarator", "function"); $$.nodes = $1.nodes;/*这里的nodes应该是ID*/
         $$.addNode(ASTNode("LP", "(")).addNode($3).addNode(ASTNode("RP", ")"));} |
 	direct_declarator LP RP
-        {$$ = ASTNode("direct_declarator", "function"); $$.nodes = $1.nodes;/*这里的nodes应该是ID*/
-        $$.addNode(ASTNode("LP", "(")).addNode(ASTNode("RP", ")"));}
+        {$$ = ASTNode("direct_declarator", "function"); $$.nodes = $1.nodes;/*这里的nodes应该是ID*/}
     ;
 
 parameter_type_list: 

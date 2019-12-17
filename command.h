@@ -49,9 +49,6 @@ class ASTNode{
 
         ASTNode& addNode(ASTNode _node);
 
-        // 一个递归的创建符号表的函数
-        void createSymbolTable();
-
         int kind;
 
         std::string name;

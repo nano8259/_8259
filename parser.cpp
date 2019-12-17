@@ -971,7 +971,7 @@ namespace  EzAquarii  {
   case 31:
 #line 213 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("direct_declarator", "function"); yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[3].value.as < EzAquarii::ASTNode > ().nodes;/*这里的nodes应该是ID*/
-        yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("LP", "(")).addNode(yystack_[1].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("RP", ")"));}
+        yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[1].value.as < EzAquarii::ASTNode > ());}
 #line 976 "parser.cpp"
     break;
 
@@ -984,599 +984,598 @@ namespace  EzAquarii  {
 
   case 33:
 #line 219 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("direct_declarator", "function"); yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[2].value.as < EzAquarii::ASTNode > ().nodes;/*这里的nodes应该是ID*/
-        yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("LP", "(")).addNode(ASTNode("RP", ")"));}
-#line 990 "parser.cpp"
+    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("direct_declarator", "function"); yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[2].value.as < EzAquarii::ASTNode > ().nodes;/*这里的nodes应该是ID*/}
+#line 989 "parser.cpp"
     break;
 
   case 34:
-#line 224 "parser.y"
+#line 223 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
-#line 996 "parser.cpp"
+#line 995 "parser.cpp"
     break;
 
   case 35:
-#line 228 "parser.y"
+#line 227 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("parameter_list"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1002 "parser.cpp"
+#line 1001 "parser.cpp"
     break;
 
   case 36:
-#line 230 "parser.y"
+#line 229 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[2].value.as < EzAquarii::ASTNode > (); yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1008 "parser.cpp"
+#line 1007 "parser.cpp"
     break;
 
   case 37:
-#line 235 "parser.y"
+#line 234 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("parameter_declaration"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[1].value.as < EzAquarii::ASTNode > ()).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1015 "parser.cpp"
+#line 1014 "parser.cpp"
     break;
 
   case 38:
-#line 237 "parser.y"
+#line 236 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("parameter_declaration"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1021 "parser.cpp"
+#line 1020 "parser.cpp"
     break;
 
   case 39:
-#line 241 "parser.y"
+#line 240 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("identifier_list"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("ID", yystack_[0].value.as < std::string > ()));}
-#line 1027 "parser.cpp"
+#line 1026 "parser.cpp"
     break;
 
   case 40:
-#line 243 "parser.y"
+#line 242 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[2].value.as < EzAquarii::ASTNode > (); yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[0].value.as < std::string > ());}
-#line 1033 "parser.cpp"
+#line 1032 "parser.cpp"
     break;
 
   case 41:
-#line 248 "parser.y"
+#line 247 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("compound_statement"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("LC", "{")).addNode(ASTNode("RC", "}"));}
-#line 1039 "parser.cpp"
+#line 1038 "parser.cpp"
     break;
 
   case 42:
-#line 250 "parser.y"
+#line 249 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("compound_statement"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("LC", "{")).addNode(yystack_[1].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("RC", "}"));}
-#line 1045 "parser.cpp"
+#line 1044 "parser.cpp"
     break;
 
   case 43:
-#line 252 "parser.y"
+#line 251 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("compound_statement"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("LC", "{")).addNode(yystack_[1].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("RC", "}"));}
-#line 1051 "parser.cpp"
+#line 1050 "parser.cpp"
     break;
 
   case 44:
-#line 254 "parser.y"
+#line 253 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("compound_statement"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("LC", "{")).addNode(yystack_[2].value.as < EzAquarii::ASTNode > ()).addNode(yystack_[1].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("RC", "}"));}
-#line 1057 "parser.cpp"
+#line 1056 "parser.cpp"
     break;
 
   case 45:
-#line 259 "parser.y"
+#line 258 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("statement_list"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1063 "parser.cpp"
+#line 1062 "parser.cpp"
     break;
 
   case 46:
-#line 261 "parser.y"
+#line 260 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[1].value.as < EzAquarii::ASTNode > (); yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1069 "parser.cpp"
+#line 1068 "parser.cpp"
     break;
 
   case 47:
-#line 266 "parser.y"
+#line 265 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("constant"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("INT_VALUE", yystack_[0].value.as < std::string > ()));}
-#line 1075 "parser.cpp"
+#line 1074 "parser.cpp"
     break;
 
   case 48:
-#line 268 "parser.y"
+#line 267 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("constant"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("FLOAT_VALUE", yystack_[0].value.as < std::string > ()));}
-#line 1081 "parser.cpp"
+#line 1080 "parser.cpp"
     break;
 
   case 49:
-#line 273 "parser.y"
+#line 272 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("primary_expression"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("ID", yystack_[0].value.as < std::string > ()));}
-#line 1087 "parser.cpp"
+#line 1086 "parser.cpp"
     break;
 
   case 50:
-#line 275 "parser.y"
+#line 274 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
-#line 1093 "parser.cpp"
+#line 1092 "parser.cpp"
     break;
 
   case 51:
-#line 278 "parser.y"
+#line 277 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("primary_expression"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("LP", "(")).addNode(yystack_[1].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("RP", ")"));}
-#line 1100 "parser.cpp"
+#line 1099 "parser.cpp"
     break;
 
   case 52:
-#line 284 "parser.y"
+#line 283 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
-#line 1106 "parser.cpp"
+#line 1105 "parser.cpp"
     break;
 
   case 53:
-#line 286 "parser.y"
+#line 285 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("postfix_expression"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[3].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("LB", "[")).addNode(yystack_[1].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("RB", "]"));}
-#line 1113 "parser.cpp"
+#line 1112 "parser.cpp"
     break;
 
   case 54:
-#line 289 "parser.y"
+#line 288 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("postfix_expression"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[2].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("LP", "(")).addNode(ASTNode("RP", ")"));}
-#line 1120 "parser.cpp"
+#line 1119 "parser.cpp"
     break;
 
   case 55:
-#line 292 "parser.y"
+#line 291 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("postfix_expression"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[3].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("LP", "(")).addNode(yystack_[1].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("RP", ")"));}
-#line 1127 "parser.cpp"
+#line 1126 "parser.cpp"
     break;
 
   case 56:
-#line 295 "parser.y"
+#line 294 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("postfix_expression"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[1].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("INC_OP", "+="));}
-#line 1134 "parser.cpp"
+#line 1133 "parser.cpp"
     break;
 
   case 57:
-#line 298 "parser.y"
+#line 297 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("postfix_expression"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[1].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("DEC_OP", "-="));}
-#line 1141 "parser.cpp"
+#line 1140 "parser.cpp"
     break;
 
   case 58:
-#line 304 "parser.y"
+#line 303 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
-#line 1147 "parser.cpp"
+#line 1146 "parser.cpp"
     break;
 
   case 59:
-#line 306 "parser.y"
+#line 305 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[2].value.as < EzAquarii::ASTNode > (); yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1153 "parser.cpp"
+#line 1152 "parser.cpp"
     break;
 
   case 60:
-#line 311 "parser.y"
+#line 310 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
-#line 1159 "parser.cpp"
+#line 1158 "parser.cpp"
     break;
 
   case 61:
-#line 313 "parser.y"
+#line 312 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("unary_expression"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("INC_OP", "+=")).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1165 "parser.cpp"
+#line 1164 "parser.cpp"
     break;
 
   case 62:
-#line 315 "parser.y"
+#line 314 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("unary_expression"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("DEC_OP", "-=")).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1171 "parser.cpp"
+#line 1170 "parser.cpp"
     break;
 
   case 63:
-#line 317 "parser.y"
+#line 316 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("unary_expression"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[1].value.as < EzAquarii::ASTNode > ()).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1177 "parser.cpp"
+#line 1176 "parser.cpp"
     break;
 
   case 64:
-#line 323 "parser.y"
+#line 322 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("unary_operator"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("PLUS_OP", "+"));}
-#line 1183 "parser.cpp"
+#line 1182 "parser.cpp"
     break;
 
   case 65:
-#line 324 "parser.y"
+#line 323 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("unary_operator"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("MINUS_OP", "-"));}
-#line 1189 "parser.cpp"
+#line 1188 "parser.cpp"
     break;
 
   case 66:
-#line 329 "parser.y"
+#line 328 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
-#line 1195 "parser.cpp"
+#line 1194 "parser.cpp"
     break;
 
   case 67:
-#line 331 "parser.y"
+#line 330 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("cast_expression"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("LP", "(")).addNode(yystack_[2].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("RP", ")")).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1202 "parser.cpp"
+#line 1201 "parser.cpp"
     break;
 
   case 68:
-#line 337 "parser.y"
+#line 336 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
-#line 1208 "parser.cpp"
+#line 1207 "parser.cpp"
     break;
 
   case 69:
-#line 339 "parser.y"
+#line 338 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("multiplicative_expression"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[2].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("STAR_OP", "*")).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1215 "parser.cpp"
+#line 1214 "parser.cpp"
     break;
 
   case 70:
-#line 342 "parser.y"
+#line 341 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("multiplicative_expression"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[2].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("DIV_OP", "/")).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1222 "parser.cpp"
+#line 1221 "parser.cpp"
     break;
 
   case 71:
-#line 345 "parser.y"
+#line 344 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("multiplicative_expression"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[2].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("MOD_OP", "%")).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1229 "parser.cpp"
+#line 1228 "parser.cpp"
     break;
 
   case 72:
-#line 351 "parser.y"
+#line 350 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
-#line 1235 "parser.cpp"
+#line 1234 "parser.cpp"
     break;
 
   case 73:
-#line 353 "parser.y"
+#line 352 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("additive_expression"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[2].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("PLUS_OP", "+")).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1242 "parser.cpp"
+#line 1241 "parser.cpp"
     break;
 
   case 74:
-#line 356 "parser.y"
+#line 355 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("additive_expression"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[2].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("MINUS_OP", "-")).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1249 "parser.cpp"
+#line 1248 "parser.cpp"
     break;
 
   case 75:
-#line 362 "parser.y"
+#line 361 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
-#line 1255 "parser.cpp"
+#line 1254 "parser.cpp"
     break;
 
   case 76:
-#line 369 "parser.y"
+#line 368 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
-#line 1261 "parser.cpp"
+#line 1260 "parser.cpp"
     break;
 
   case 77:
-#line 371 "parser.y"
+#line 370 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("relational_expression"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[2].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("LT", "<")).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1268 "parser.cpp"
+#line 1267 "parser.cpp"
     break;
 
   case 78:
-#line 374 "parser.y"
+#line 373 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("relational_expression"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[2].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("AT", ">")).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1275 "parser.cpp"
+#line 1274 "parser.cpp"
     break;
 
   case 79:
-#line 377 "parser.y"
+#line 376 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("relational_expression"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[2].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("LE", "<=")).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1282 "parser.cpp"
+#line 1281 "parser.cpp"
     break;
 
   case 80:
-#line 380 "parser.y"
+#line 379 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("relational_expression"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[2].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("GE", ">=")).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1289 "parser.cpp"
+#line 1288 "parser.cpp"
     break;
 
   case 81:
-#line 386 "parser.y"
+#line 385 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
-#line 1295 "parser.cpp"
+#line 1294 "parser.cpp"
     break;
 
   case 82:
-#line 388 "parser.y"
+#line 387 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("equality_expression"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[2].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("EQ", "==")).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1302 "parser.cpp"
+#line 1301 "parser.cpp"
     break;
 
   case 83:
-#line 391 "parser.y"
+#line 390 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("equality_expression"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[2].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("NE", "<=")).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1309 "parser.cpp"
+#line 1308 "parser.cpp"
     break;
 
   case 84:
-#line 397 "parser.y"
+#line 396 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
-#line 1315 "parser.cpp"
+#line 1314 "parser.cpp"
     break;
 
   case 85:
-#line 399 "parser.y"
+#line 398 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("and_expression"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[2].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("AND_OP", "&&")).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1322 "parser.cpp"
+#line 1321 "parser.cpp"
     break;
 
   case 86:
-#line 405 "parser.y"
+#line 404 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
-#line 1328 "parser.cpp"
+#line 1327 "parser.cpp"
     break;
 
   case 87:
-#line 407 "parser.y"
+#line 406 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("exclusive_or_expression"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[2].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("XOR_OP", "^")).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1335 "parser.cpp"
+#line 1334 "parser.cpp"
     break;
 
   case 88:
-#line 413 "parser.y"
+#line 412 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
-#line 1341 "parser.cpp"
+#line 1340 "parser.cpp"
     break;
 
   case 89:
-#line 415 "parser.y"
+#line 414 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("inclusive_or_expression"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[2].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("OR_OP", "|")).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1348 "parser.cpp"
+#line 1347 "parser.cpp"
     break;
 
   case 90:
-#line 421 "parser.y"
+#line 420 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
-#line 1354 "parser.cpp"
+#line 1353 "parser.cpp"
     break;
 
   case 91:
-#line 423 "parser.y"
+#line 422 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("logical_and_expression"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[2].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("AND", "&&")).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1361 "parser.cpp"
+#line 1360 "parser.cpp"
     break;
 
   case 92:
-#line 429 "parser.y"
+#line 428 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
-#line 1367 "parser.cpp"
+#line 1366 "parser.cpp"
     break;
 
   case 93:
-#line 431 "parser.y"
+#line 430 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("logical_or_expression"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[2].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("OR", "||")).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1374 "parser.cpp"
+#line 1373 "parser.cpp"
     break;
 
   case 94:
-#line 437 "parser.y"
+#line 436 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
-#line 1380 "parser.cpp"
+#line 1379 "parser.cpp"
     break;
 
   case 95:
-#line 443 "parser.y"
+#line 442 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
-#line 1386 "parser.cpp"
+#line 1385 "parser.cpp"
     break;
 
   case 96:
-#line 445 "parser.y"
+#line 444 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("assignment_expression"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[2].value.as < EzAquarii::ASTNode > ()).addNode(yystack_[1].value.as < EzAquarii::ASTNode > ()).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1393 "parser.cpp"
+#line 1392 "parser.cpp"
     break;
 
   case 97:
-#line 450 "parser.y"
+#line 449 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("assignment_operator"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("ASSIGN", "="));}
-#line 1399 "parser.cpp"
+#line 1398 "parser.cpp"
     break;
 
   case 98:
-#line 451 "parser.y"
+#line 450 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("assignment_operator"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("MUL_ASSIGN", "×="));}
-#line 1405 "parser.cpp"
+#line 1404 "parser.cpp"
     break;
 
   case 99:
-#line 452 "parser.y"
+#line 451 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("assignment_operator"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("DIV_ASSIGN", "/="));}
-#line 1411 "parser.cpp"
+#line 1410 "parser.cpp"
     break;
 
   case 100:
-#line 453 "parser.y"
+#line 452 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("assignment_operator"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("MOD_ASSIGN", "%="));}
-#line 1417 "parser.cpp"
+#line 1416 "parser.cpp"
     break;
 
   case 101:
-#line 454 "parser.y"
+#line 453 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("assignment_operator"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("ADD_ASSIGN", "+="));}
-#line 1423 "parser.cpp"
+#line 1422 "parser.cpp"
     break;
 
   case 102:
-#line 455 "parser.y"
+#line 454 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("assignment_operator"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("SUB_ASSIGN", "-="));}
-#line 1429 "parser.cpp"
+#line 1428 "parser.cpp"
     break;
 
   case 103:
-#line 465 "parser.y"
+#line 464 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
-#line 1435 "parser.cpp"
+#line 1434 "parser.cpp"
     break;
 
   case 104:
-#line 467 "parser.y"
+#line 466 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("expression"); 
         yylhs.value.as < EzAquarii::ASTNode > () = yystack_[2].value.as < EzAquarii::ASTNode > (); yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1442 "parser.cpp"
+#line 1441 "parser.cpp"
     break;
 
   case 105:
-#line 473 "parser.y"
+#line 472 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
-#line 1448 "parser.cpp"
+#line 1447 "parser.cpp"
     break;
 
   case 106:
-#line 478 "parser.y"
+#line 477 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("labeled_statement"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("CASE", "case")).addNode(yystack_[2].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("COLON", ":")).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1455 "parser.cpp"
+#line 1454 "parser.cpp"
     break;
 
   case 107:
-#line 481 "parser.y"
+#line 480 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("labeled_statement"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("DEFAULT", "default")).addNode(ASTNode("COLON", ":")).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1462 "parser.cpp"
+#line 1461 "parser.cpp"
     break;
 
   case 108:
-#line 487 "parser.y"
+#line 486 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("selection_statement"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("IF", "if")).addNode(ASTNode("LP", "(")).addNode(yystack_[2].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("RP", ")")).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1469 "parser.cpp"
+#line 1468 "parser.cpp"
     break;
 
   case 109:
-#line 490 "parser.y"
+#line 489 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("selection_statement"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("IF", "if")).addNode(ASTNode("LP", "(")).addNode(yystack_[4].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("RP", ")"));
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[2].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("ELSE", "else")).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1477 "parser.cpp"
+#line 1476 "parser.cpp"
     break;
 
   case 110:
-#line 494 "parser.y"
+#line 493 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("selection_statement"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("SWITCH", "switch")).addNode(ASTNode("LP", "(")).addNode(yystack_[2].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("RP", ")")).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1484 "parser.cpp"
+#line 1483 "parser.cpp"
     break;
 
   case 111:
-#line 500 "parser.y"
+#line 499 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("iteration_statement"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("WHILE", "while")).addNode(ASTNode("LP", "(")).addNode(yystack_[2].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("RP", ")")).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1491 "parser.cpp"
+#line 1490 "parser.cpp"
     break;
 
   case 112:
-#line 503 "parser.y"
+#line 502 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("iteration_statement"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("FOR", "for")).addNode(ASTNode("LP", "(")).addNode(yystack_[4].value.as < EzAquarii::ASTNode > ()).addNode(yystack_[3].value.as < EzAquarii::ASTNode > ()).addNode(yystack_[2].value.as < EzAquarii::ASTNode > ());
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("RP", ")")).addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1499 "parser.cpp"
+#line 1498 "parser.cpp"
     break;
 
   case 113:
-#line 511 "parser.y"
+#line 510 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("jump_statement"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("CONTINUE", "continue"))/*.addNode(ASTNode("SEMMI", ";"))*/;}
-#line 1506 "parser.cpp"
+#line 1505 "parser.cpp"
     break;
 
   case 114:
-#line 514 "parser.y"
+#line 513 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("jump_statement"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("BREAK", "break"));}
-#line 1513 "parser.cpp"
+#line 1512 "parser.cpp"
     break;
 
   case 115:
-#line 517 "parser.y"
+#line 516 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("jump_statement"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("RETURN", "return"));}
-#line 1520 "parser.cpp"
+#line 1519 "parser.cpp"
     break;
 
   case 116:
-#line 520 "parser.y"
+#line 519 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("jump_statement"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("RETURN", "return"));}
-#line 1527 "parser.cpp"
+#line 1526 "parser.cpp"
     break;
 
   case 117:
-#line 525 "parser.y"
+#line 524 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("expression_statement");;}
-#line 1533 "parser.cpp"
+#line 1532 "parser.cpp"
     break;
 
   case 118:
-#line 527 "parser.y"
+#line 526 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("expression_statement"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[1].value.as < EzAquarii::ASTNode > ());}
-#line 1540 "parser.cpp"
+#line 1539 "parser.cpp"
     break;
 
   case 119:
-#line 532 "parser.y"
+#line 531 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("statement"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1546 "parser.cpp"
+#line 1545 "parser.cpp"
     break;
 
   case 120:
-#line 533 "parser.y"
+#line 532 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("statement"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1552 "parser.cpp"
+#line 1551 "parser.cpp"
     break;
 
   case 121:
-#line 534 "parser.y"
+#line 533 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("statement"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1558 "parser.cpp"
+#line 1557 "parser.cpp"
     break;
 
   case 122:
-#line 535 "parser.y"
+#line 534 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("statement"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1564 "parser.cpp"
+#line 1563 "parser.cpp"
     break;
 
   case 123:
-#line 536 "parser.y"
+#line 535 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("statement"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1570 "parser.cpp"
+#line 1569 "parser.cpp"
     break;
 
   case 124:
-#line 537 "parser.y"
+#line 536 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("statement"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1576 "parser.cpp"
+#line 1575 "parser.cpp"
     break;
 
 
-#line 1580 "parser.cpp"
+#line 1579 "parser.cpp"
 
             default:
               break;
@@ -2139,16 +2138,16 @@ namespace  EzAquarii  {
        0,   118,   118,   125,   127,   132,   134,   139,   141,   146,
      148,   153,   154,   159,   160,   165,   166,   168,   173,   174,
      179,   183,   185,   190,   194,   195,   196,   201,   203,   206,
-     209,   212,   215,   218,   224,   228,   229,   234,   237,   241,
-     242,   247,   249,   251,   253,   258,   260,   265,   267,   272,
-     274,   277,   283,   285,   288,   291,   294,   297,   303,   305,
-     310,   312,   314,   316,   323,   324,   328,   330,   336,   338,
-     341,   344,   350,   352,   355,   361,   368,   370,   373,   376,
-     379,   385,   387,   390,   396,   398,   404,   406,   412,   414,
-     420,   422,   428,   430,   436,   442,   444,   450,   451,   452,
-     453,   454,   455,   464,   466,   472,   477,   480,   486,   489,
-     493,   499,   502,   510,   513,   516,   519,   525,   526,   532,
-     533,   534,   535,   536,   537
+     209,   212,   215,   218,   223,   227,   228,   233,   236,   240,
+     241,   246,   248,   250,   252,   257,   259,   264,   266,   271,
+     273,   276,   282,   284,   287,   290,   293,   296,   302,   304,
+     309,   311,   313,   315,   322,   323,   327,   329,   335,   337,
+     340,   343,   349,   351,   354,   360,   367,   369,   372,   375,
+     378,   384,   386,   389,   395,   397,   403,   405,   411,   413,
+     419,   421,   427,   429,   435,   441,   443,   449,   450,   451,
+     452,   453,   454,   463,   465,   471,   476,   479,   485,   488,
+     492,   498,   501,   509,   512,   515,   518,   524,   525,   531,
+     532,   533,   534,   535,   536
   };
 
   // Print the state stack on the debug stream.
@@ -2183,9 +2182,9 @@ namespace  EzAquarii  {
 
 #line 37 "parser.y"
 } //  EzAquarii 
-#line 2187 "parser.cpp"
+#line 2186 "parser.cpp"
 
-#line 540 "parser.y"
+#line 539 "parser.y"
 
 
 // Bison expects us to provide implementation - otherwise linker complains
