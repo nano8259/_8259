@@ -272,7 +272,7 @@ primary_expression:
     ID 
         {$$ = ASTNode("primary_expression"); $$.addNode(ASTNode("ID", $1));}|
 	constant 
-        {$$ = $1; $$.addNode($1);}|
+        {$$ = $1;}|
 	/*STRING_LITERAL*/
 	LP expression RP 
         {$$ = ASTNode("primary_expression"); 
@@ -308,7 +308,7 @@ argument_expression_list:
 
 unary_expression: 
     postfix_expression
-        {$$ = ASTNode("unary_expression"); $$.nodes = $1.nodes;}|
+        {$$ = $1;}|
 	INC_OP unary_expression
         {$$ = ASTNode("unary_expression"); $$.addNode(ASTNode("INC_OP", "+=")).addNode($2);}|
 	DEC_OP unary_expression
@@ -326,7 +326,7 @@ unary_operator:
 
 cast_expression: 
     unary_expression
-        {$$ = ASTNode("cast_expression"); $$.nodes = $1.nodes;}|
+        {$$ = $1;}|
 	LP type_specifier RP cast_expression
         {$$ = ASTNode("cast_expression"); 
         $$.addNode(ASTNode("LP", "(")).addNode($2).addNode(ASTNode("RP", ")")).addNode($4);}
@@ -334,7 +334,7 @@ cast_expression:
 
 multiplicative_expression: 
     cast_expression
-        {$$ = ASTNode("multiplicative_expression"); $$.nodes = $1.nodes;}|
+        {$$ = $1;}|
 	multiplicative_expression STAR_OP cast_expression
         {$$ = ASTNode("multiplicative_expression"); 
         $$.addNode($1).addNode(ASTNode("STAR_OP", "*")).addNode($3);}|
@@ -348,7 +348,7 @@ multiplicative_expression:
 
 additive_expression: 
     multiplicative_expression
-        {$$ = ASTNode("additive_expression"); $$.nodes = $1.nodes;}|
+        {$$ = $1;}|
 	additive_expression PLUS_OP multiplicative_expression
         {$$ = ASTNode("additive_expression"); 
         $$.addNode($1).addNode(ASTNode("PLUS_OP", "+")).addNode($3);}|
@@ -359,14 +359,14 @@ additive_expression:
 
 shift_expression:
     additive_expression
-        {$$ = ASTNode("shift_expression"); $$.nodes = $1.nodes;}
+        {$$ = $1;}
 	/*| shift_expression LEFT_OP additive_expression
 	| shift_expression RIGHT_OP additive_expression*/
 	;
 
 relational_expression:
     shift_expression
-        {$$ = ASTNode("relational_expression"); $$.nodes = $1.nodes;}|
+        {$$ = $1;}|
 	relational_expression LT shift_expression
         {$$ = ASTNode("relational_expression"); 
         $$.addNode($1).addNode(ASTNode("LT", "<")).addNode($3);}|
@@ -383,7 +383,7 @@ relational_expression:
 
 equality_expression: 
     relational_expression
-        {$$ = ASTNode("equality_expression"); $$.nodes = $1.nodes;}|
+        {$$ = $1;}|
 	equality_expression EQ relational_expression
         {$$ = ASTNode("equality_expression"); 
         $$.addNode($1).addNode(ASTNode("EQ", "==")).addNode($3);}|
@@ -394,7 +394,7 @@ equality_expression:
 
 and_expression: 
     equality_expression
-        {$$ = ASTNode("and_expression"); $$.nodes = $1.nodes;}|
+        {$$ = $1;}|
 	and_expression AND_OP equality_expression
         {$$ = ASTNode("and_expression"); 
         $$.addNode($1).addNode(ASTNode("AND_OP", "&&")).addNode($3);}
@@ -402,7 +402,7 @@ and_expression:
 
 exclusive_or_expression:
     and_expression
-        {$$ = ASTNode("exclusive_or_expression"); $$.nodes = $1.nodes;}|
+        {$$ = $1;}|
 	exclusive_or_expression XOR_OP and_expression
         {$$ = ASTNode("exclusive_or_expression"); 
         $$.addNode($1).addNode(ASTNode("XOR_OP", "^")).addNode($3);}
@@ -410,7 +410,7 @@ exclusive_or_expression:
 
 inclusive_or_expression: 
     exclusive_or_expression
-        {$$ = ASTNode("inclusive_or_expression"); $$.nodes = $1.nodes;}|
+        {$$ = $1;}|
 	inclusive_or_expression OR_OP exclusive_or_expression
         {$$ = ASTNode("inclusive_or_expression"); 
         $$.addNode($1).addNode(ASTNode("OR_OP", "|")).addNode($3);}
@@ -418,7 +418,7 @@ inclusive_or_expression:
 
 logical_and_expression: 
     inclusive_or_expression
-        {$$ = ASTNode("logical_and_expression"); $$.nodes = $1.nodes;}|
+        {$$ = $1;}|
 	logical_and_expression AND inclusive_or_expression
         {$$ = ASTNode("logical_and_expression"); 
         $$.addNode($1).addNode(ASTNode("AND", "&&")).addNode($3);}
@@ -426,7 +426,7 @@ logical_and_expression:
 
 logical_or_expression:
     logical_and_expression
-        {$$ = ASTNode("logical_or_expression"); $$.nodes = $1.nodes;}|
+        {$$ = $1;}|
 	logical_or_expression OR logical_and_expression
         {$$ = ASTNode("logical_or_expression"); 
         $$.addNode($1).addNode(ASTNode("OR", "||")).addNode($3);}
@@ -434,13 +434,13 @@ logical_or_expression:
 
 conditional_expression: 
     logical_or_expression
-        {$$ = ASTNode("conditional_expression"); $$.nodes = $1.nodes;}
+        {$$ = $1;}
 	/*| logical_or_expression '?' expression ':' conditional_expression*/
 	;
 
 assignment_expression: 
     conditional_expression
-        {$$ = ASTNode("assignment_expression"); $$.nodes = $1.nodes;}|
+        {$$ = $1;}|
 	unary_expression assignment_operator assignment_expression
         {$$ = ASTNode("assignment_expression"); 
         $$.addNode($1).addNode($2).addNode($3);}
@@ -462,7 +462,7 @@ assignment_operator:
 
 expression: 
     assignment_expression
-        {$$ = ASTNode("expression"); $$.nodes = $1.nodes;}|
+        {$$ = $1;}|
 	expression COMMA assignment_expression
         {$$ = ASTNode("expression"); 
         $$ = $1; $$.addNode($3);}
@@ -470,7 +470,7 @@ expression:
 
 constant_expression: 
     conditional_expression
-        {$$ = ASTNode("constant_expression"); $$.nodes = $1.nodes;}
+        {$$ = $1;}
 	;
 
 labeled_statement:

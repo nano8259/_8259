@@ -32,6 +32,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <vector>
 
 using namespace EzAquarii;
 using std::cout;
@@ -83,14 +84,14 @@ void ASTNode::display(std::vector<int> v){
             cout << this->name << ": " << this->value << '\n';
         }
         
-        for(list<ASTNode>::iterator it = this->nodes.begin(); it != this->nodes.end(); it++){
-            if(std::distance(it, this->nodes.end()) != 1){
+        for(int i = 0; i < nodes.size(); i++){
+            if(i != nodes.size() - 1){
                 v.push_back(1);
             }else{
                 v.push_back(0);
             }
             //cout << std::distance(it, this->nodes.end()) << "  " << v.size() << endl;
-            it->display(v);
+            nodes[i].display(v);
             v.pop_back();
         }
     }
@@ -104,34 +105,52 @@ void ASTNode::createSymbolTable(){
     if(name == "declaration"){
         // 可能是变量的声明或者函数的声明
         // 此声明语句的属性：类型与标签
-        int type;
+        Type::PlainType type;
         int label;
-        for(list<ASTNode>::iterator it = nodes.begin(); it != nodes.end(); it++){
+        for(int i = 0; i < nodes.size(); i++){
             //cout << it->name << endl;
-            if(it->name == "type_specifier"){
+            if(nodes[i].name == "type_specifier"){
                 //cout << it->name << endl;
                 cout << "get type_specifier" << endl;
                 //找到了类型
-                std::string type_str = it->nodes.begin()->name;
-                if(type_str == "INT"){type = INT;}
-                else if(type_str == "FLOAT"){type = FLOAT;}
-                else if(type_str == "CHAR"){type = CHAR;}
+                std::string type_str = nodes[i].nodes[0].name;
+                if(type_str == "INT"){type = Type::PlainType::INT;}
+                else if(type_str == "FLOAT"){type = Type::PlainType::FLOAT;}
+                else if(type_str == "CHAR"){type = Type::PlainType::CHAR;}
                 else{cout << "<<!!unkown type!!>>" << endl;}
-            } else if (it->name == "init_declarator_list"){
+            } else if (nodes[i].name == "init_declarator_list"){
                 //找到了声明符列表
                 cout << "get init_declarator_list" << endl;
-                for(list<ASTNode>::iterator it_decli = it->nodes.begin(); it_decli != it->nodes.end(); it_decli++){
+                for(int j = 0; j < nodes[i].nodes.size(); j++){
                     //遍历声明符列表，it_decli指向的声明符列表里的nodes
-                    if(it_decli->name == "declarator"   ){
+                    if(nodes[i].nodes[j].name == "declarator"   ){
                         //找到了声明符，但是还不能确定是变量还是函数
                         cout << "get declarator" << endl;
                         //将声明符是变量还是函数还是数组的信息存放在declarator的value中
-                        if(it_decli->value == "variable"){label = VAR;}
-                        else if(it_decli->value == "function"){label = FUNC;}
-                        else if(it_decli->value == "array"){label = ARRAY;}
+                        if(nodes[i].nodes[j].value == "variable"){
+                            label = VAR;
+                            st.addSymbol(nodes[i].nodes[j].nodes[0].value, type, label);}
+                        else if(nodes[i].nodes[j].value == "function"){
+                            label = FUNC;
+                            st.addSymbol(nodes[i].nodes[j].nodes[0].value, type, label);}
+                        else if(nodes[i].nodes[j].value == "array"){
+                            label = ARRAY;
+                            // 发现将要声明的内容是数组后，接下来往下找数组的维度信息，一边找一遍逐步构架数组
+                            Type array_type; // 用来装最终将要添加到符号表中的Type
+                            for(int k = 1; k < nodes[i].nodes[j].nodes.size() && nodes[i].nodes[j].nodes[k].name == "constant"; k++){
+                                // TODO：这里有一个可以报错的地方，即方括号内的数字不为int
+                                cout << nodes[i].nodes[j].nodes[k].name << endl;
+                                int tmp_length = std::stoi(nodes[i].nodes[j].nodes[k].nodes[0].value);
+                                if(k == 1){ // 说明是第一个数组，使用基本类型进行定义
+                                    array_type = Type(type, tmp_length);
+                                }else { // 是多维数组了，使用之前的数组进行定义
+                                    array_type = Type(array_type, tmp_length);
+                                }
+                            }
+                            st.addSymbol(nodes[i].nodes[j].nodes[0].value, array_type, label);
+                            }
                         else{cout << "<<!!unkown label!!>>" << endl;}
                         //声明符的第一个nodes一定是ID，终于可以创建symbol了！
-                        st.addSymbol(it_decli->nodes.begin()->value, type, label);
                     }
                 }
             }
@@ -141,8 +160,8 @@ void ASTNode::createSymbolTable(){
         cout << "get function_definition" << endl;
     }else{
         // 啥也不是，递归的寻找子树中的声明语句
-        for(list<ASTNode>::iterator it = nodes.begin(); it != nodes.end(); it++){
-            it->createSymbolTable();
+        for(int i = 0; i < nodes.size(); i++){
+            nodes[i].createSymbolTable();
         }
     } 
 }

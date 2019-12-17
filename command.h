@@ -59,7 +59,7 @@ class ASTNode{
         std::string value;
 
         // ASTNode* ptr[4];
-        std::list<ASTNode> nodes;
+        std::vector<ASTNode> nodes;
         int pos;                       //语法单位所在位置行号
         // int place;                     //存放（临时）变量在符号表的位置序号
         // char Etrue[15],Efalse[15];       //对布尔表达式的翻译时，真假转移目标的标号

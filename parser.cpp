@@ -871,7 +871,7 @@ namespace  EzAquarii  {
 
   case 15:
 #line 165 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("initializer"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
+    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("initializer"); yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[0].value.as < EzAquarii::ASTNode > ().nodes;}
 #line 876 "parser.cpp"
     break;
 
@@ -1088,7 +1088,7 @@ namespace  EzAquarii  {
 
   case 50:
 #line 275 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("primary_expression"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
+    {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
 #line 1093 "parser.cpp"
     break;
 
@@ -1101,7 +1101,7 @@ namespace  EzAquarii  {
 
   case 52:
 #line 284 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("postfix_expression"); yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[0].value.as < EzAquarii::ASTNode > ().nodes;}
+    {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
 #line 1106 "parser.cpp"
     break;
 
@@ -1142,7 +1142,7 @@ namespace  EzAquarii  {
 
   case 58:
 #line 304 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("argument_expression_list"); yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[0].value.as < EzAquarii::ASTNode > ().nodes;}
+    {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
 #line 1147 "parser.cpp"
     break;
 
@@ -1154,7 +1154,7 @@ namespace  EzAquarii  {
 
   case 60:
 #line 311 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("unary_expression"); yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[0].value.as < EzAquarii::ASTNode > ().nodes;}
+    {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
 #line 1159 "parser.cpp"
     break;
 
@@ -1190,7 +1190,7 @@ namespace  EzAquarii  {
 
   case 66:
 #line 329 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("cast_expression"); yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[0].value.as < EzAquarii::ASTNode > ().nodes;}
+    {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
 #line 1195 "parser.cpp"
     break;
 
@@ -1203,7 +1203,7 @@ namespace  EzAquarii  {
 
   case 68:
 #line 337 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("multiplicative_expression"); yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[0].value.as < EzAquarii::ASTNode > ().nodes;}
+    {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
 #line 1208 "parser.cpp"
     break;
 
@@ -1230,7 +1230,7 @@ namespace  EzAquarii  {
 
   case 72:
 #line 351 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("additive_expression"); yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[0].value.as < EzAquarii::ASTNode > ().nodes;}
+    {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
 #line 1235 "parser.cpp"
     break;
 
@@ -1250,13 +1250,13 @@ namespace  EzAquarii  {
 
   case 75:
 #line 362 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("shift_expression"); yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[0].value.as < EzAquarii::ASTNode > ().nodes;}
+    {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
 #line 1255 "parser.cpp"
     break;
 
   case 76:
 #line 369 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("relational_expression"); yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[0].value.as < EzAquarii::ASTNode > ().nodes;}
+    {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
 #line 1261 "parser.cpp"
     break;
 
@@ -1290,7 +1290,7 @@ namespace  EzAquarii  {
 
   case 81:
 #line 386 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("equality_expression"); yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[0].value.as < EzAquarii::ASTNode > ().nodes;}
+    {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
 #line 1295 "parser.cpp"
     break;
 
@@ -1310,7 +1310,7 @@ namespace  EzAquarii  {
 
   case 84:
 #line 397 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("and_expression"); yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[0].value.as < EzAquarii::ASTNode > ().nodes;}
+    {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
 #line 1315 "parser.cpp"
     break;
 
@@ -1323,7 +1323,7 @@ namespace  EzAquarii  {
 
   case 86:
 #line 405 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("exclusive_or_expression"); yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[0].value.as < EzAquarii::ASTNode > ().nodes;}
+    {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
 #line 1328 "parser.cpp"
     break;
 
@@ -1336,7 +1336,7 @@ namespace  EzAquarii  {
 
   case 88:
 #line 413 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("inclusive_or_expression"); yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[0].value.as < EzAquarii::ASTNode > ().nodes;}
+    {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
 #line 1341 "parser.cpp"
     break;
 
@@ -1349,7 +1349,7 @@ namespace  EzAquarii  {
 
   case 90:
 #line 421 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("logical_and_expression"); yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[0].value.as < EzAquarii::ASTNode > ().nodes;}
+    {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
 #line 1354 "parser.cpp"
     break;
 
@@ -1362,7 +1362,7 @@ namespace  EzAquarii  {
 
   case 92:
 #line 429 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("logical_or_expression"); yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[0].value.as < EzAquarii::ASTNode > ().nodes;}
+    {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
 #line 1367 "parser.cpp"
     break;
 
@@ -1375,13 +1375,13 @@ namespace  EzAquarii  {
 
   case 94:
 #line 437 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("conditional_expression"); yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[0].value.as < EzAquarii::ASTNode > ().nodes;}
+    {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
 #line 1380 "parser.cpp"
     break;
 
   case 95:
 #line 443 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("assignment_expression"); yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[0].value.as < EzAquarii::ASTNode > ().nodes;}
+    {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
 #line 1386 "parser.cpp"
     break;
 
@@ -1430,7 +1430,7 @@ namespace  EzAquarii  {
 
   case 103:
 #line 465 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("expression"); yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[0].value.as < EzAquarii::ASTNode > ().nodes;}
+    {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
 #line 1435 "parser.cpp"
     break;
 
@@ -1443,7 +1443,7 @@ namespace  EzAquarii  {
 
   case 105:
 #line 473 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("constant_expression"); yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[0].value.as < EzAquarii::ASTNode > ().nodes;}
+    {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
 #line 1448 "parser.cpp"
     break;
 
