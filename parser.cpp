@@ -1081,7 +1081,7 @@ namespace  EzAquarii  {
 
   case 49:
 #line 272 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("primary_expression"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("ID", yystack_[0].value.as < std::string > ()));}
+    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("primary_expression", "id"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("ID", yystack_[0].value.as < std::string > ()));}
 #line 1086 "parser.cpp"
     break;
 
@@ -1106,22 +1106,22 @@ namespace  EzAquarii  {
 
   case 53:
 #line 285 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("postfix_expression"); 
+    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("postfix_expression", "array"); 
         yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[3].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("LB", "[")).addNode(yystack_[1].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("RB", "]"));}
 #line 1112 "parser.cpp"
     break;
 
   case 54:
 #line 288 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("postfix_expression"); 
-        yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[2].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("LP", "(")).addNode(ASTNode("RP", ")"));}
+    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("postfix_expression", "function"); 
+        yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[2].value.as < EzAquarii::ASTNode > ());}
 #line 1119 "parser.cpp"
     break;
 
   case 55:
 #line 291 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("postfix_expression"); 
-        yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[3].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("LP", "(")).addNode(yystack_[1].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("RP", ")"));}
+    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("postfix_expression", "function"); 
+        yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[3].value.as < EzAquarii::ASTNode > ()).addNode(yystack_[1].value.as < EzAquarii::ASTNode > ());}
 #line 1126 "parser.cpp"
     break;
 
@@ -1141,13 +1141,13 @@ namespace  EzAquarii  {
 
   case 58:
 #line 303 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[0].value.as < EzAquarii::ASTNode > ();}
+    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("argument_expression_list", "parameter"); yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[0].value.as < EzAquarii::ASTNode > ().nodes;}
 #line 1146 "parser.cpp"
     break;
 
   case 59:
 #line 305 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[2].value.as < EzAquarii::ASTNode > (); yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
+    {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[2].value.as < EzAquarii::ASTNode > (); yylhs.value.as < EzAquarii::ASTNode > ().addNodes(yystack_[0].value.as < EzAquarii::ASTNode > ().nodes);}
 #line 1152 "parser.cpp"
     break;
 
@@ -1533,49 +1533,48 @@ namespace  EzAquarii  {
 
   case 118:
 #line 526 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("expression_statement"); 
-        yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[1].value.as < EzAquarii::ASTNode > ().nodes;}
-#line 1539 "parser.cpp"
+    {yylhs.value.as < EzAquarii::ASTNode > () = yystack_[1].value.as < EzAquarii::ASTNode > ();}
+#line 1538 "parser.cpp"
     break;
 
   case 119:
-#line 531 "parser.y"
+#line 530 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("statement"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1545 "parser.cpp"
+#line 1544 "parser.cpp"
     break;
 
   case 120:
-#line 532 "parser.y"
+#line 531 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("statement"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1551 "parser.cpp"
+#line 1550 "parser.cpp"
     break;
 
   case 121:
-#line 533 "parser.y"
+#line 532 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("statement"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1557 "parser.cpp"
+#line 1556 "parser.cpp"
     break;
 
   case 122:
-#line 534 "parser.y"
+#line 533 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("statement"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1563 "parser.cpp"
+#line 1562 "parser.cpp"
     break;
 
   case 123:
-#line 535 "parser.y"
+#line 534 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("statement"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1569 "parser.cpp"
+#line 1568 "parser.cpp"
     break;
 
   case 124:
-#line 536 "parser.y"
+#line 535 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("statement"); yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[0].value.as < EzAquarii::ASTNode > ());}
-#line 1575 "parser.cpp"
+#line 1574 "parser.cpp"
     break;
 
 
-#line 1579 "parser.cpp"
+#line 1578 "parser.cpp"
 
             default:
               break;
@@ -2146,8 +2145,8 @@ namespace  EzAquarii  {
      378,   384,   386,   389,   395,   397,   403,   405,   411,   413,
      419,   421,   427,   429,   435,   441,   443,   449,   450,   451,
      452,   453,   454,   463,   465,   471,   476,   479,   485,   488,
-     492,   498,   501,   509,   512,   515,   518,   524,   525,   531,
-     532,   533,   534,   535,   536
+     492,   498,   501,   509,   512,   515,   518,   524,   525,   530,
+     531,   532,   533,   534,   535
   };
 
   // Print the state stack on the debug stream.
@@ -2182,9 +2181,9 @@ namespace  EzAquarii  {
 
 #line 37 "parser.y"
 } //  EzAquarii 
-#line 2186 "parser.cpp"
+#line 2185 "parser.cpp"
 
-#line 539 "parser.y"
+#line 538 "parser.y"
 
 
 // Bison expects us to provide implementation - otherwise linker complains

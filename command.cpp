@@ -101,6 +101,13 @@ ASTNode& ASTNode::addNode(ASTNode _node){
     return *this;
 }
 
+ASTNode& ASTNode::addNodes(std::vector<ASTNode> ns){
+    for(int i = 0; i < ns.size(); i++){
+        nodes.push_back(ns[i]);
+    }
+    return *this;
+}
+
 Command::Command(const std::string &name, const std::vector<uint64_t> arguments) :
     m_name(name),
     m_args(arguments)

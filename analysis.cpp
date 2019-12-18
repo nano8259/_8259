@@ -35,7 +35,8 @@ void EzAquarii::findSymbol(ASTNode n){
             findSymbol(n.nodes[i]);
         }
         st.scopeEnd();
-    }else if (n.name == "expression_statement"){
+    }else if (regex_match(n.name, regex(".*expression"))){
+        // 找到一个带有enpression的句子后，就进行分析
         analysisExpression(n);
     }
     else{ // 不是以上节点，则继续分析其子节点
@@ -136,16 +137,50 @@ void EzAquarii::createFunctionDefinition(ASTNode n){
 void EzAquarii::analysisExpression(ASTNode n){
     // n是name为expression_statement/..._expression的节点，子节点为表达式语句中的内容
     // 遍历这个表达式语句并且对每个使用的标识符查看是否存在未声明错误
-    if(n.name == "ID"){
-        cout << "HERE" << n.value << endl;
+    if(n.value == "function"){
+        // function的第一个子节点是名称，第二个子节点是参数列表
+        std::string func_name = n.nodes[0].nodes[0].value;
+        std::vector<std::string> para_list;
+        if(n.nodes.size() == 2){
+            for(int i = 0; i < n.nodes[1].nodes.size(); i++){
+                cout << "HERE  " << n.nodes[1].nodes[i].value << endl;
+                para_list.push_back(n.nodes[1].nodes[i].value);
+            }
+        }
+        // 找到函数名称及参数列表后，开始判断调用的函数是否已声明
+        Symbol* sp = st.search(func_name);
+        if(sp == NULL){
+            printErrorInfo(102, func_name); // 使用未定义的变量
+        }else if (sp->getLabel() != FUNC){
+            printErrorInfo(111, func_name); // 对普通变量使用\"(...)\"或\"()\"(函数调用)操作符
+        }else{
+            if(sp->parameter_list.size() != para_list.size()){
+                printErrorInfo(109, func_name); // 函数调用时实参与形参的数目或类型不匹配
+            }else{
+                for(int i = 0; i < para_list.size(); i++){
+                    Symbol* psp = st.search(para_list[i]);
+                    if(psp == NULL){
+                        printErrorInfo(101, para_list[i]); // 使用未定义的变量
+                    }else if(psp->getType().typeString() != sp->parameter_list[i].typeString()){
+                        printErrorInfo(109, func_name); // 函数调用时实参与形参的数目或类型不匹配
+                    }
+                }
+            }
+        }
+    }else if(n.name == "ID"){
+        // 这里的ID既不在函数中，也不在数组中，说明是普通的变量
         Symbol* sp = st.search(n.value);
         if(sp == NULL){
-            printErrorInfo(101); // 使用未定义的变量
+            printErrorInfo(101, n.value); // 使用未定义的变量
+        }else if (sp->getLabel() == FUNC){
+            printErrorInfo(115, n.value); // 在调用函数时未使用\"(...)\"或\"()\"(函数调用)操作符
+        }
+    }else{
+        for(int i = 0; i < n.nodes.size(); i++){
+            analysisExpression(n.nodes[i]);
         }
     }
-    for(int i = 0; i < n.nodes.size(); i++){
-        analysisExpression(n.nodes[i]);
-    }
+
 }
 
 std::map<int, std::string> err_info = {
@@ -164,14 +199,15 @@ std::map<int, std::string> err_info = {
     {112, "数组访问操作符\"[...]\"中出现非整型数字"},
     {113, "尝试声明已经声明过的函数"},
     {114, "函数的定义与声明不符"},
+    {115, "在调用函数时未使用\"(...)\"或\"()\"(函数调用)操作符"}
 
 };
 
-void EzAquarii::printErrorInfo(int n){
+void EzAquarii::printErrorInfo(int n, std::string id){
     std::string err_info_str; // 用来放报错的行数
 
     err_info_str += "ERROR";
-    cout << err_info_str << n << err_info[n] << endl;
+    cout << err_info_str << n << err_info[n] << id << endl;
 }
 
 void EzAquarii::test(){

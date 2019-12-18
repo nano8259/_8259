@@ -58,11 +58,14 @@ class Symbol{
         // 添加为函数项添加一个参数
         void addParameter(Type);
         std::string getName();
+        Type getType();
+        int getLabel();
 
         int width; // 宽度
         // 以下的两个是对于函数而言的，应该有更好的实现方法，但是想不太到
         std::vector<Type> parameter_list; // 对于函数的参数列表
         bool isDefined; // 对于函数的符号表项
+        
 
     private:
         std::string name; // 变量名

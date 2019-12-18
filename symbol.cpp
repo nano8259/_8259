@@ -154,6 +154,14 @@ string Symbol::getName(){
     return name;
 }
 
+Type Symbol::getType(){
+    return type;
+}
+
+int Symbol::getLabel(){
+    return label;
+}
+
 SymbolTable::SymbolTable()
 :level_now(0), offset_now(0)
 {    

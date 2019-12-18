@@ -48,6 +48,7 @@ class ASTNode{
         void display(std::vector<int> v);
 
         ASTNode& addNode(ASTNode _node);
+        ASTNode& addNodes(std::vector<ASTNode> ns);
 
         int kind;
 

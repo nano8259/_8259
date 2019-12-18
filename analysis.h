@@ -23,7 +23,7 @@ void createSymbolTable(ASTNode n);
 
 void analysisExpression(ASTNode n);
 
-void printErrorInfo(int n);
+void printErrorInfo(int n, std::string id);
 
 void test();
 

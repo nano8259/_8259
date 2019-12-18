@@ -9,8 +9,10 @@ int main(){
     //int a = 1;
     //int y = 0;
     c = x + 1;
+    x();
     print1();
     print(x, y);
+    print(x, y, y);
     //for(x=1; i < 10; i+=1){
     //    int scope2;
     //    z = x + c;

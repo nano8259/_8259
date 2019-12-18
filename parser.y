@@ -269,7 +269,7 @@ constant:
 
 primary_expression: 
     ID 
-        {$$ = ASTNode("primary_expression"); $$.addNode(ASTNode("ID", $1));}|
+        {$$ = ASTNode("primary_expression", "id"); $$.addNode(ASTNode("ID", $1));}|
 	constant 
         {$$ = $1;}|
 	/*STRING_LITERAL*/
@@ -282,14 +282,14 @@ postfix_expression:
     primary_expression 
         {$$ = $1;}|
 	postfix_expression LB expression RB 
-        {$$ = ASTNode("postfix_expression"); 
+        {$$ = ASTNode("postfix_expression", "array"); 
         $$.addNode($1).addNode(ASTNode("LB", "[")).addNode($3).addNode(ASTNode("RB", "]"));}|
 	postfix_expression LP RP
-        {$$ = ASTNode("postfix_expression"); 
-        $$.addNode($1).addNode(ASTNode("LP", "(")).addNode(ASTNode("RP", ")"));}|
+        {$$ = ASTNode("postfix_expression", "function"); 
+        $$.addNode($1);}|
 	postfix_expression LP argument_expression_list RP
-        {$$ = ASTNode("postfix_expression"); 
-        $$.addNode($1).addNode(ASTNode("LP", "(")).addNode($3).addNode(ASTNode("RP", ")"));}|
+        {$$ = ASTNode("postfix_expression", "function"); 
+        $$.addNode($1).addNode($3);}|
 	postfix_expression INC_OP
         {$$ = ASTNode("postfix_expression"); 
         $$.addNode($1).addNode(ASTNode("INC_OP", "+="));}|
@@ -300,9 +300,9 @@ postfix_expression:
 
 argument_expression_list: 
     assignment_expression
-        {$$ = $1;}|
+        {$$ = ASTNode("argument_expression_list", "parameter"); $$.nodes = $1.nodes;}|
 	argument_expression_list COMMA assignment_expression
-        {$$ = $1; $$.addNode($3);}
+        {$$ = $1; $$.addNodes($3.nodes);}
 	;
 
 unary_expression: 
@@ -523,8 +523,7 @@ jump_statement:
 expression_statement: 
     SEMMI {$$ = ASTNode("expression_statement");;}|
 	expression SEMMI
-        {$$ = ASTNode("expression_statement"); 
-        $$.nodes = $1.nodes;}
+        {$$ = $1;}
 	;
 
 statement: 
