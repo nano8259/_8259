@@ -2042,6 +2042,6 @@ void yyfree (void * ptr )
 
 
 void print(std::string&& type, char* yytext){
-    cout << "Scanner:<" << type << ">" << yytext << endl;
+    //cout << "Scanner:<" << type << ">" << yytext << endl;
     return;
 }

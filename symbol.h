@@ -60,6 +60,7 @@ class Symbol{
         std::string getName();
         Type getType();
         int getLabel();
+        int getLevel();
 
         int width; // 宽度
         // 以下的两个是对于函数而言的，应该有更好的实现方法，但是想不太到
@@ -99,8 +100,12 @@ class SymbolTable{
         Symbol& getLast();
         // 从后向前以名字检索符号表，检索到后返回Symbol的指针
         Symbol* search(std::string s);
+        // 从后向前以名字检索符号表，检索到后返回Index，若没找到就返回-1
+        int searchIndex(std::string s);
         // 存储符号表的栈，因为stack不提供遍历，所以换使用list
         std::vector<Symbol> symbol_table;
+        int getLevelNow();
+
     private:
         
         // 存储各个作用域的起点的栈，因为使用c++的栈实现，存储的不是偏移而是每个作用域开始时的变量个数

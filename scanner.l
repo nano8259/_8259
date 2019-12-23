@@ -211,6 +211,6 @@ ID [a-zA-Z][a-zA-Z0-9]*
 %%
 
 void print(std::string&& type, char* yytext){
-    cout << "Scanner:<" << type << ">" << yytext << endl;
+    //cout << "Scanner:<" << type << ">" << yytext << endl;
     return;
 }

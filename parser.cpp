@@ -791,7 +791,7 @@ namespace  EzAquarii  {
             {
   case 2:
 #line 119 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("program"); yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[0].value.as < EzAquarii::ASTNode > ().nodes; yylhs.value.as < EzAquarii::ASTNode > ().display();
+    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("program"); yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[0].value.as < EzAquarii::ASTNode > ().nodes; /*$$.display();*/
         cout << "there are totally " <<driver.location() << "chars in this program" << endl;
         passRoot(yylhs.value.as < EzAquarii::ASTNode > ());}
 #line 798 "parser.cpp"
@@ -1107,7 +1107,7 @@ namespace  EzAquarii  {
   case 53:
 #line 285 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("postfix_expression", "array"); 
-        yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[3].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("LB", "[")).addNode(yystack_[1].value.as < EzAquarii::ASTNode > ()).addNode(ASTNode("RB", "]"));}
+        yylhs.value.as < EzAquarii::ASTNode > ().addNode(yystack_[3].value.as < EzAquarii::ASTNode > ()).addNode(yystack_[1].value.as < EzAquarii::ASTNode > ());}
 #line 1112 "parser.cpp"
     break;
 

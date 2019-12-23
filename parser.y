@@ -116,7 +116,7 @@
 
 program:
     translation_unit
-        {$$ = ASTNode("program"); $$.nodes = $1.nodes; $$.display();
+        {$$ = ASTNode("program"); $$.nodes = $1.nodes; /*$$.display();*/
         cout << "there are totally " <<driver.location() << "chars in this program" << endl;
         passRoot($$);}
     ;
@@ -283,7 +283,7 @@ postfix_expression:
         {$$ = $1;}|
 	postfix_expression LB expression RB 
         {$$ = ASTNode("postfix_expression", "array"); 
-        $$.addNode($1).addNode(ASTNode("LB", "[")).addNode($3).addNode(ASTNode("RB", "]"));}|
+        $$.addNode($1).addNode($3);}|
 	postfix_expression LP RP
         {$$ = ASTNode("postfix_expression", "function"); 
         $$.addNode($1);}|

@@ -162,6 +162,10 @@ int Symbol::getLabel(){
     return label;
 }
 
+int Symbol::getLevel(){
+    return level;
+}
+
 SymbolTable::SymbolTable()
 :level_now(0), offset_now(0)
 {    
@@ -217,12 +221,12 @@ Symbol SymbolTable::addSymbol(std::string n, Type t, int la){
 
 Symbol SymbolTable::addSymbol(Symbol s){
     symbol_table.push_back(s);
-    // 打印表
-    printTable();
     return s;
 }
 
 void SymbolTable::scopeStart(){
+    // 打印表
+    printTable();
     level_now += 1;
     // 记录当前的数量
     symbol_scope_sp.push(symbol_table.size());
@@ -231,6 +235,8 @@ void SymbolTable::scopeStart(){
 }
 
 void SymbolTable::scopeEnd(){
+    // 打印表
+    printTable();
     int i;
     level_now -= 1;
 
@@ -244,6 +250,7 @@ void SymbolTable::scopeEnd(){
 }
 
 void SymbolTable::printTable(){
+    cout << "----------------------------------------------------" << endl;
     cout << "name\tlevel\ttype\tlable\toffset\twidth\tparameters" << endl;
     for(int i = 0; i < symbol_table.size(); i++){
         symbol_table[i].printSymbol();
@@ -261,4 +268,17 @@ Symbol* SymbolTable::search(std::string s){
         }
     }
     return NULL;
+}
+
+int SymbolTable::searchIndex(std::string s){
+    for(int i = symbol_table.size() - 1; i > -1; i--){
+        if(symbol_table[i].getName() == s){
+            return i;
+        }
+    }
+    return -1;
+}
+
+int SymbolTable::getLevelNow(){
+    return level_now;
 }

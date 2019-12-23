@@ -56,7 +56,7 @@ void EzAquarii::createSymbolDeclaration(ASTNode n){
         //cout << it->name << endl;
         if(n.nodes[i].name == "type_specifier"){
             //cout << it->name << endl;
-            cout << "get type_specifier" << endl;
+            //cout << "get type_specifier" << endl;
             //找到了类型
             std::string type_str = n.nodes[i].nodes[0].name;
             if(type_str == "INT"){type = Type::PlainType::INT;}
@@ -65,21 +65,27 @@ void EzAquarii::createSymbolDeclaration(ASTNode n){
             else{cout << "<<!!unkown type!!>>" << endl;}
         } else if (n.nodes[i].name == "init_declarator_list"){
             //找到了声明符列表
-            cout << "get init_declarator_list" << endl;
+            //cout << "get init_declarator_list" << endl;
             for(int j = 0; j < n.nodes[i].nodes.size(); j++){
                 //遍历声明符列表，it_decli指向的声明符列表里的nodes
                 if(n.nodes[i].nodes[j].name == "declarator"   ){
                     //找到了声明符，但是还不能确定是变量还是函数
-                    cout << "get declarator" << endl;
+                    //cout << "get declarator" << endl;
                     //将声明符是变量还是函数还是数组的信息存放在declarator的value中
                     if(n.nodes[i].nodes[j].value == "variable"){
                         label = VAR;
-                        st.addSymbol(n.nodes[i].nodes[j].nodes[0].value, type, label);}
+                        if(checkDuplicate(n.nodes[i].nodes[j].nodes[0].value) == true) {
+                            st.addSymbol(n.nodes[i].nodes[j].nodes[0].value, type, label);
+                        }
+                        // st.addSymbol(n.nodes[i].nodes[j].nodes[0].value, type, label);
+                    }
                     else if(n.nodes[i].nodes[j].value == "function"){
                         label = FUNC;
                         //Symbol s = st.addSymbol(n.nodes[i].nodes[j].nodes[0].value, type, label);
                         //这里发现使用返回引用比较麻烦，所以转为之间取出st中最新加入的Symbol，为该函数
-                        st.addSymbol(n.nodes[i].nodes[j].nodes[0].value, type, label);
+                        if(checkDuplicate(n.nodes[i].nodes[j].nodes[0].value) == true) {
+                            st.addSymbol(n.nodes[i].nodes[j].nodes[0].value, type, label);
+                        }
                         // Symbol s = st.getLast();
                         // cout << &s << endl;
                         // st.symbol_table[st.symbol_table.size() - 1].addParameter(Type(Type::PlainType::INT));
@@ -88,20 +94,26 @@ void EzAquarii::createSymbolDeclaration(ASTNode n){
                     }
                     else if(n.nodes[i].nodes[j].value == "array"){
                         label = ARRAY;
-                        // 发现将要声明的内容是数组后，接下来往下找数组的维度信息，一边找一遍逐步构架数组
+                        // 发现将要声明的内容是数组后，接下来往下找数组的维度信息，一边找一遍逐步构建数组
                         Type array_type; // 用来装最终将要添加到符号表中的Type
                         for(int k = 1; k < n.nodes[i].nodes[j].nodes.size() && n.nodes[i].nodes[j].nodes[k].name == "constant"; k++){
                             // TODO：这里有一个可以报错的地方，即方括号内的数字不为int
-                            int tmp_length = std::stoi(n.nodes[i].nodes[j].nodes[k].nodes[0].value);
+                            int tmp_length = 0;
+                            if(!regex_match(n.nodes[i].nodes[j].nodes[k].nodes[0].value, regex("0|[1-9][0-9]*"))){
+                                printErrorInfo(112, n.nodes[i].nodes[j].nodes[0].value);
+                            }else{
+                                tmp_length = std::stoi(n.nodes[i].nodes[j].nodes[k].nodes[0].value);
+                            }
                             if(k == 1){ // 说明是第一个数组，使用基本类型进行定义
                                 array_type = Type(type, tmp_length);
                             }else { // 是多维数组了，使用之前的数组进行定义
                                 array_type = Type(array_type, tmp_length);
                             }
                         }
-                        st.addSymbol(n.nodes[i].nodes[j].nodes[0].value, array_type, label);
+                        if(checkDuplicate(n.nodes[i].nodes[j].nodes[0].value) == true) {
+                            st.addSymbol(n.nodes[i].nodes[j].nodes[0].value, array_type, label);
                         }
-                    else{cout << "<<!!unkown label!!>>" << endl;}
+                    } else{cout << "<<!!unkown label!!>>" << endl;}
                     //声明符的第一个nodes一定是ID，终于可以创建symbol了！
                 }
             }
@@ -125,13 +137,80 @@ void EzAquarii::createFunctionDeclarationParameters(ASTNode n){
         else if(type_str == "FLOAT"){type = Type::PlainType::FLOAT;}
         else if(type_str == "CHAR"){type = Type::PlainType::CHAR;}
         st.symbol_table[st.symbol_table.size() - 1].addParameter(Type(type));
-        st.printTable();
+        // st.printTable();
     }
 }
 
-void EzAquarii::createFunctionDefinition(ASTNode n){
-    cout << "get function_definition" << endl;
+bool EzAquarii::checkDuplicate(std::string id){
+    // 这个函数的作用是查看变量或者函数的声明是否有重复
+    Symbol* sp = st.search(id);
+    if(sp == NULL){ // 检测是否重复定义
+        return true; // 说明没有找到名字相同的
+    }else if(sp->getLevel() == st.getLevelNow()){
+        // 如果出现重复定义错误的话，跳过这个，继续分析下面的
+        if(sp->getLabel() == FUNC){
+            printErrorInfo(113, id);
+        }else if(sp->getLabel() == VAR || sp->getLabel() == ARRAY ){
+            printErrorInfo(103, id);
+        }
+    }else{
+        return true;
+    }
+    return false;
+}
 
+bool EzAquarii::createFunctionDefinition(ASTNode n){
+    //cout << "get function_definition" << endl;
+    Type::PlainType type;
+    std::string id = n.nodes[1].nodes[0].value;
+    std::string type_str = n.nodes[0].nodes[0].name;
+    std::vector<std::string> para_list;
+    if(type_str == "INT"){type = Type::PlainType::INT;}
+    else if(type_str == "FLOAT"){type = Type::PlainType::FLOAT;}
+    else if(type_str == "CHAR"){type = Type::PlainType::CHAR;}
+    else{cout << "<<!!unkown type!!>>" << endl;}
+    if(n.nodes[1].nodes.size() == 2){
+        ASTNode para_list_node = n.nodes[1].nodes[1];
+        for(int i = 0; i < para_list_node.nodes.size(); i++){
+        para_list.push_back(para_list_node.nodes[i].nodes[0].nodes[0].value);
+        }
+    }
+    // 所需信息：类型、函数名、参数列表均已找到，下面开始检查
+    Symbol* sp = st.search(id);
+    if(sp == NULL){
+        // 没有没有找到同名函数，则在符号表中添加这个函数
+        st.addSymbol(id, type, FUNC);
+        st.symbol_table[st.symbol_table.size() - 1].isDefined = true;
+        createFunctionDeclarationParameters(n.nodes[1]);
+    }else if(sp->getLabel() != FUNC){
+        // 找到了同名符号，但是并非函数，则报错并返回
+        printErrorInfo(114, id); // 函数的定义与声明不符
+        return false;
+    }else if(sp->isDefined == true){
+        // 找到了同名符号且是函数，看看是不是已经定义了
+        printErrorInfo(104, id);
+        return false;
+    }else if (type != sp->getType().plain_type){
+        // 这里有点问题, 没法比较多维数组
+        // 找到了已经声明的未定义函数，看看类型与参数列表是否不同
+        cout <<type<<sp->getType().plain_type << endl;
+        printErrorInfo(114, id); // 函数的定义与声明不符
+        return false;
+    }else{
+        if(sp->parameter_list.size() != para_list.size()){
+            printErrorInfo(114, id); // 函数的定义与声明不符
+            return false;
+        }else{
+            for(int i = 0; i < para_list.size(); i++){
+                if(para_list[i] != sp->parameter_list[i].typeString()){
+                    printErrorInfo(114, id); // 函数的定义与声明不符
+                    return false;
+                }
+            }
+        }
+    }
+    st.symbol_table[st.searchIndex(id)].isDefined = true;
+    return true;
 }
 
 void EzAquarii::analysisExpression(ASTNode n){
@@ -143,7 +222,6 @@ void EzAquarii::analysisExpression(ASTNode n){
         std::vector<std::string> para_list;
         if(n.nodes.size() == 2){
             for(int i = 0; i < n.nodes[1].nodes.size(); i++){
-                cout << "HERE  " << n.nodes[1].nodes[i].value << endl;
                 para_list.push_back(n.nodes[1].nodes[i].value);
             }
         }
@@ -166,6 +244,22 @@ void EzAquarii::analysisExpression(ASTNode n){
                     }
                 }
             }
+        }
+    }else if (n.name == "array"){
+        // 第一个子节点是名称，第二个子节点是下标
+        // 这里的问题是没有支持多维访问
+        std::string array_name = n.nodes[0].nodes[0].value;
+        std::vector<std::string> index_list;
+        if(n.nodes.size() == 2){
+            for(int i = 0; i < n.nodes[1].nodes.size(); i++){
+                index_list.push_back(n.nodes[1].nodes[i].value);
+            }
+        }
+        Symbol* sp = st.search(array_name);
+        if(sp == NULL){
+            printErrorInfo(102, array_name); // 使用未定义的变量
+        }else if (sp->getLabel() != ARRAY){
+            printErrorInfo(110, array_name); // 对非数组型变量使用"[...]"(数组访问)操作符
         }
     }else if(n.name == "ID"){
         // 这里的ID既不在函数中，也不在数组中，说明是普通的变量
@@ -207,7 +301,7 @@ void EzAquarii::printErrorInfo(int n, std::string id){
     std::string err_info_str; // 用来放报错的行数
 
     err_info_str += "ERROR";
-    cout << err_info_str << n << err_info[n] << id << endl;
+    //cout << err_info_str << n << err_info[n] << id << endl;
 }
 
 void EzAquarii::test(){

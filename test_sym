@@ -1,27 +1,44 @@
 int x = 1;
 float y,z;
-//int xs[5] = {0};
-//int xss[5][5];
-//int xsss[5][5][5];
+char cs[1.5];
+int xs[5] = {0};
+int xss[5][5];
+int xsss[5][5][5];
 int print(int i, int j);
+int print;
+int test(int i);
 
-int main(){
+int main(int argv){
     //int a = 1;
     //int y = 0;
+    int x;
+    int x;
     c = x + 1;
-    x();
+    x[2] = 5;
     print1();
     print(x, y);
-    print(x, y, y);
-    //for(x=1; i < 10; i+=1){
-    //    int scope2;
-    //    z = x + c;
-    //    if(z > 5){
-    //        break;
-    //    }
-    //}
+    print(x, x, x);
+    x = print;
+    x();
+    for(x=1; i < 10; i+=1){
+        int scope2;
+        z = x + c;
+        if(z > 5){
+            break;
+        }
+    }
+    return 0;
 }
 
 int print(int x1, int x2){
     int x;
+    return 1;
+}
+
+int print(int x1, int x2){
+    int x;
+}
+
+int test(){
+    ;
 }
