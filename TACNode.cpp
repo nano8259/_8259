@@ -90,16 +90,16 @@ std::string TACNode::display(){
         str = result.opnString() + " := " + opn1.opnString();
         break;
     case PLUS:
-        str = result.opnString() + " := " + opn2.opnString() + " + " + opn1.opnString();
+        str = result.opnString() + " := " + opn1.opnString() + " + " + opn2.opnString();
         break;
     case MINUS:
-        str = result.opnString() + " := " + opn2.opnString() + " - " + opn1.opnString();
+        str = result.opnString() + " := " + opn1.opnString() + " - " + opn2.opnString();
         break;    
     case STAR:
-        str = result.opnString() + " := " + opn2.opnString() + " * " + opn1.opnString();
+        str = result.opnString() + " := " + opn1.opnString() + " * " + opn2.opnString();
         break;
     case DIV:
-        str = result.opnString() + " := " + opn2.opnString() + " / " + opn1.opnString();
+        str = result.opnString() + " := " + opn1.opnString() + " / " + opn2.opnString();
         break;
     case GOTO:
         str = "GOTO " + result.opnString();
@@ -129,7 +129,10 @@ std::string TACNode::display(){
         str = "IF " + opn1.opnString() + " || " + opn2.opnString() + " GOTO " + result.opnString();
         break;
     case RETURN:
-        str = "RETURN " + result.opnString() + " :";
+        str = "RETURN " + result.opnString();
+        break;
+    case ARG:
+        str = "ARG " + result.opnString();
         break;
     case CALL_R:
         str = result.opnString() + " := CALL " + opn1.opnString();

@@ -1,0 +1,47 @@
+FUNCTION fibo :
+PARAM v5
+temp0 := #1
+IF v0 == temp0 GOTO label2
+GOTO label3
+LABEL label3 :
+temp2 := #2
+IF v0 == temp2 GOTO label2
+GOTO label0
+LABEL label1 :
+temp4 := #1
+RETURN temp4
+temp6 := #1
+temp7 := v0 - temp6
+ARG temp7
+temp5 := CALL fibo
+temp9 := #2
+temp10 := v0 - temp9
+ARG temp10
+temp8 := CALL fibo
+temp5 := temp8
+RETURN 
+LABEL label0 :
+FUNCTION main :
+temp15 := CALL read
+v6 := temp15
+temp16 := #1
+v8 := temp16
+ARG v8
+temp11 := CALL fibo
+v7 := temp11
+ARG v7
+temp12 := CALL write
+temp13 := #1
+temp14 := v8 + temp13
+v8 := temp14
+ARG v8
+temp11 := CALL fibo
+v7 := temp11
+ARG v7
+temp12 := CALL write
+temp13 := #1
+temp14 := v8 + temp13
+v8 := temp14
+temp17 := #1
+RETURN temp17
+LABEL label4 :

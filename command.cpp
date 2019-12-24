@@ -33,6 +33,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <fstream>
 
 using namespace EzAquarii;
 using std::cout;
@@ -96,9 +97,11 @@ void ASTNode::display(std::vector<int> v){
         }
     }
 
+extern std::ofstream irfile;
+
 void ASTNode::displayCode(){
     for(int i = 0; i < code.size(); i++){
-        code[i].display();
+        irfile << code[i].display() << endl;
     }
 }
 

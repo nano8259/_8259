@@ -13,10 +13,10 @@ namespace EzAquarii {
 
 void passRoot(ASTNode r);
 
-void findSymbol(ASTNode n);
+void findSymbol(ASTNode &n);
 void createSymbolDeclaration(ASTNode n);
 void createFunctionDeclarationParameters(ASTNode n);
-bool createFunctionDefinition(ASTNode n);
+bool createFunctionDefinition(ASTNode &n);
 void createSymbolTable(ASTNode n);
 
 void analysisExpression(ASTNode n);
@@ -35,6 +35,7 @@ int newLabel();
 void analysis_selection_statement(ASTNode &n);
 void analysis_expression(ASTNode &n);
 void analysis_statement(ASTNode &n);
+void analysis_compound_statement(ASTNode &n);
 void analysis_jump_statement(ASTNode &n);
 
 OPN symbol_to_opn(Symbol s);
