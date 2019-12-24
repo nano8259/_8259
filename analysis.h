@@ -11,8 +11,6 @@
 
 namespace EzAquarii {
 
-static SymbolTable st;
-
 void passRoot(ASTNode r);
 
 void findSymbol(ASTNode n);

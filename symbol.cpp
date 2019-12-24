@@ -100,8 +100,12 @@ Symbol::Symbol(){
 
 }
 
+Symbol::Symbol(int le, Type::PlainType t, int o, int no)
+:alias_type(TEMP), alias_no(no), level(le), label(VAR), offset(o){
+}
+
 Symbol::Symbol(std::string n, int le, Type::PlainType t, int la, int o)
-:name(n), level(le), label(la), offset(o){
+:alias_type(V),name(n), level(le), label(la), offset(o){
     type = Type(t);
     width = type.width;
 }
@@ -112,21 +116,26 @@ Symbol::Symbol(std::string n, int le, Type::PlainType t, int la, int o, int w)
 }
 
 Symbol::Symbol(std::string n, int lev, Type t, int la, int o, int len)
-:name(n), level(lev), label(la), offset(o){
+:alias_type(V),name(n), level(lev), label(la), offset(o){
     type = Type(t, len);
     width = t.width;
 }
 
 Symbol::Symbol(std::string n, int lev, Type t, int la, int o)
-:name(n), level(lev), label(la), offset(o){
+:alias_type(V), name(n), level(lev), label(la), offset(o){
     type = t;
     width = t.width;
+}
+
+void Symbol::setAliasNo(int no){
+    alias_no = no;
 }
 
 void Symbol::printSymbol(){
     string type_str = type.typeString();
     string label_str;
     string parameter_str;
+    string alias_str;
     switch (label)
     {
     case FUNC: 
@@ -143,7 +152,21 @@ void Symbol::printSymbol(){
     default:
         break;
     }
-    cout << name << "\t" << level << "\t" << type_str << "\t" << label_str << "\t" << offset << "\t" << width << "\t" << parameter_str << endl;
+    switch (alias_type)
+    {
+    case UNKNOWN:
+        alias_str = "";
+        break;
+    case V:
+        alias_str = "v" + std::to_string(alias_no);
+        break;
+    case TEMP:
+        alias_str = "temp" + std::to_string(alias_no);
+        break;
+    default:
+        break;
+    }
+    cout << name << "\t" << alias_str << "\t" << level << "\t" << type_str << "\t" << label_str << "\t" << offset << "\t" << width << "\t" << parameter_str << endl;
 }
 
 void Symbol::addParameter(Type t){
@@ -167,7 +190,7 @@ int Symbol::getLevel(){
 }
 
 SymbolTable::SymbolTable()
-:level_now(0), offset_now(0)
+:level_now(0), offset_now(0), v_no_now(0), temp_no_now(0)
 {    
 }
 
@@ -181,18 +204,25 @@ Symbol SymbolTable::addSymbol(std::string n, Type::PlainType t, int la){
     }
     else if (la == VAR){ // 是基本类型，使用基本类型的构造方法
         s = Symbol(n, level_now, t, la, offset_now);
+        s.setAliasNo(v_no_now++);
         wi = s.width;
         addSymbol(s);
     }else if (la == ARRAY){ // 是数组，使用数组的构造方法
         s = Symbol(n, level_now, t, la, offset_now);
+        s.setAliasNo(v_no_now++);
     }
     offset_now += wi;
     return s;
 }
 
+Symbol SymbolTable::addTempSymbol(Type::PlainType t){
+    Symbol s = Symbol(level_now, t, offset_now, temp_no_now++);
+    offset_now += s.width;
+    return s;
+}
+
 Symbol SymbolTable::addSymbol(std::string n, Type::PlainType t, int la, int len){
     return addSymbol(n, Type(t), la, len);
-    
 }
 
 Symbol SymbolTable::addSymbol(std::string n, Type t, int la, int len){
@@ -200,6 +230,7 @@ Symbol SymbolTable::addSymbol(std::string n, Type t, int la, int len){
     Symbol s;
     if (la == ARRAY){ // 是数组，使用数组的构造方法
         Symbol s = Symbol(n, level_now, t, la, offset_now, len);
+        s.setAliasNo(v_no_now++);
         wi = s.width;
         addSymbol(s);
     }
@@ -212,6 +243,7 @@ Symbol SymbolTable::addSymbol(std::string n, Type t, int la){
     Symbol s;
     if (la == ARRAY){ // 是数组，使用数组的构造方法
         Symbol s = Symbol(n, level_now, t, la, offset_now);
+        s.setAliasNo(v_no_now++);
         wi = s.width;
         addSymbol(s);
     }
@@ -251,7 +283,7 @@ void SymbolTable::scopeEnd(){
 
 void SymbolTable::printTable(){
     cout << "----------------------------------------------------" << endl;
-    cout << "name\tlevel\ttype\tlable\toffset\twidth\tparameters" << endl;
+    cout << "name\talias\tlevel\ttype\tlable\toffset\twidth\tparameters" << endl;
     for(int i = 0; i < symbol_table.size(); i++){
         symbol_table[i].printSymbol();
     }

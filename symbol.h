@@ -45,6 +45,9 @@ class Type{
 
 class Symbol{
     public:
+        // 尝试在Symbol中加入别名这一项，所以通常的变量的别名直接给出，若变量没有给出名字，则说明是临时变量
+        // 不需要传入label了，肯定是VAR
+        Symbol(int le, Type::PlainType t, int o, int no);
         // 构造一个使用基本类型的符号项，width由传入的plaintype类型计算出
         Symbol(std::string n, int le, Type::PlainType t, int la, int o);
         // 若这个符号项是函数，则width应该是0，则直接向width传入0
@@ -66,11 +69,16 @@ class Symbol{
         // 以下的两个是对于函数而言的，应该有更好的实现方法，但是想不太到
         std::vector<Type> parameter_list; // 对于函数的参数列表
         bool isDefined; // 对于函数的符号表项
+
+        void setAliasNo(int no);
+
+        enum AliasType{UNKNOWN, V, TEMP};// 标志别名的类型，UNKNOWN一般是函数
         
 
     private:
         std::string name; // 变量名
-        // 别名？
+        AliasType alias_type; // 别名的类别
+        int alias_no; // 别名的序号
         int level; // 层号
         Type type; // 类型
         int label; // 标记
@@ -85,6 +93,8 @@ class SymbolTable{
         Symbol addSymbol(Symbol s);
         // 变量、函数的添加函数
         Symbol addSymbol(std::string n, Type::PlainType t, int la);
+        // 临时变量的添加函数，只传入类型就好
+        Symbol addTempSymbol(Type::PlainType t);
         // 数组的添加函数
         Symbol addSymbol(std::string n, Type::PlainType t, int la, int len); // 使用基本类型的数组
         Symbol addSymbol(std::string n, Type t, int la, int len); 
@@ -116,6 +126,9 @@ class SymbolTable{
         int offset_now;
         // 当前的level
         int level_now;
+        // 目前的别名的标号
+        int v_no_now;
+        int temp_no_now;
         
 };
 

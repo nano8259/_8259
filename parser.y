@@ -116,7 +116,8 @@
 
 program:
     translation_unit
-        {$$ = ASTNode("program"); $$.nodes = $1.nodes; /*$$.display();*/
+        {$$ = ASTNode("program"); $$.nodes = $1.nodes; 
+        $$.display();
         cout << "there are totally " <<driver.location() << "chars in this program" << endl;
         passRoot($$);}
     ;
@@ -244,13 +245,13 @@ identifier_list:
 
 compound_statement:
     LC RC 
-        {$$ = ASTNode("compound_statement"); $$.addNode(ASTNode("LC", "{")).addNode(ASTNode("RC", "}"));}|
+        {$$ = ASTNode("compound_statement");}|
     LC statement_list RC
-        {$$ = ASTNode("compound_statement"); $$.addNode(ASTNode("LC", "{")).addNode($2).addNode(ASTNode("RC", "}"));}|
+        {$$ = ASTNode("compound_statement"); $$.addNode($2);}|
 	LC declaration_list RC
-        {$$ = ASTNode("compound_statement"); $$.addNode(ASTNode("LC", "{")).addNode($2).addNode(ASTNode("RC", "}"));}|
+        {$$ = ASTNode("compound_statement"); $$.addNode($2);}|
 	LC declaration_list statement_list RC
-        {$$ = ASTNode("compound_statement"); $$.addNode(ASTNode("LC", "{")).addNode($2).addNode($3).addNode(ASTNode("RC", "}"));}
+        {$$ = ASTNode("compound_statement"); $$.addNode($2).addNode($3);}
 	;
 
 statement_list: 
@@ -275,7 +276,7 @@ primary_expression:
 	/*STRING_LITERAL*/
 	LP expression RP 
         {$$ = ASTNode("primary_expression"); 
-        $$.addNode(ASTNode("LP", "(")).addNode($2).addNode(ASTNode("RP", ")"));}
+        $$.addNode($2);}
 	;
 
 postfix_expression: 
@@ -484,24 +485,24 @@ labeled_statement:
 selection_statement: 
     IF LP expression RP statement %prec LOWER_THAN_ELSE
         {$$ = ASTNode("selection_statement"); 
-        $$.addNode(ASTNode("IF", "if")).addNode(ASTNode("LP", "(")).addNode($3).addNode(ASTNode("RP", ")")).addNode($5);}|
+        $$.addNode(ASTNode("IF", "if")).addNode($3).addNode($5);}|
 	IF LP expression RP statement ELSE statement
         {$$ = ASTNode("selection_statement"); 
-        $$.addNode(ASTNode("IF", "if")).addNode(ASTNode("LP", "(")).addNode($3).addNode(ASTNode("RP", ")"));
+        $$.addNode(ASTNode("IF", "if")).addNode($3);
         $$.addNode($5).addNode(ASTNode("ELSE", "else")).addNode($7);}|
 	SWITCH LP expression RP statement
         {$$ = ASTNode("selection_statement"); 
-        $$.addNode(ASTNode("SWITCH", "switch")).addNode(ASTNode("LP", "(")).addNode($3).addNode(ASTNode("RP", ")")).addNode($5);}
+        $$.addNode(ASTNode("SWITCH", "switch")).addNode($3).addNode($5);}
 	;
 
 iteration_statement: 
     WHILE LP expression RP statement 
         {$$ = ASTNode("iteration_statement"); 
-        $$.addNode(ASTNode("WHILE", "while")).addNode(ASTNode("LP", "(")).addNode($3).addNode(ASTNode("RP", ")")).addNode($5);}|
+        $$.addNode(ASTNode("WHILE", "while")).addNode($3).addNode($5);}|
 	FOR LP expression_statement expression_statement expression RP statement
         {$$ = ASTNode("iteration_statement"); 
-        $$.addNode(ASTNode("FOR", "for")).addNode(ASTNode("LP", "(")).addNode($3).addNode($4).addNode($5);
-        $$.addNode(ASTNode("RP", ")")).addNode($7);}
+        $$.addNode(ASTNode("FOR", "for")).addNode($3).addNode($4).addNode($5);
+        $$.addNode($7);}
 	;
 
 jump_statement:

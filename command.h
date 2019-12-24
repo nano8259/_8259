@@ -33,6 +33,7 @@
 #include <vector>
 #include <list>
 #include <stdint.h>
+#include "TACNode.h"
 
 namespace EzAquarii {
 
@@ -56,16 +57,17 @@ class ASTNode{
 
         std::string value;
 
-        // ASTNode* ptr[4];
         std::vector<ASTNode> nodes;
+
         int pos;                       //语法单位所在位置行号
-        // int place;                     //存放（临时）变量在符号表的位置序号
-        // char Etrue[15],Efalse[15];       //对布尔表达式的翻译时，真假转移目标的标号
-        // char Snext[15];                 //结点对应语句S执行后的下一条语句位置标号
-        // struct codenode *code;          //该结点中间代码链表头指针
-        // int type;                      //用以标识表达式结点的类型
-        // int offset;                     //偏移量
-        // int width;                     //占数据字节数
+
+        std::vector<TACNode> code; // 存放该节点对应的代码 
+        int place;                     //存放（临时）变量在符号表的位置序号
+        int Etrue ,Efalse;       //对布尔表达式的翻译时，真假转移目标的标号
+        int Snext;                 //结点对应语句S执行后的下一条语句位置标号
+        int type;                      //用以标识表达式结点的类型
+        int offset;                     //偏移量
+        int width;                     //占数据字节数
    private:
         
 };

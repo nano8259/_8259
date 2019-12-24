@@ -1,7 +1,6 @@
 #include <iostream>
-#include "command.h"
-#include "symbol.h"
 #include "analysis.h"
+#include "genir.h"
 
 #include <regex>
 
@@ -12,6 +11,7 @@ using std::regex_match;
 using std::regex;
 
 ASTNode root;
+SymbolTable st;
 //SymbolTable st;
 
 void EzAquarii::passRoot(ASTNode r){
@@ -44,6 +44,8 @@ void EzAquarii::findSymbol(ASTNode n){
             findSymbol(n.nodes[i]);
         }
     }
+    
+    if(n.name == "program") startGenTAC();
 }
 
 void EzAquarii::createSymbolDeclaration(ASTNode n){
