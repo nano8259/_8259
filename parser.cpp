@@ -1142,7 +1142,7 @@ namespace  EzAquarii  {
 
   case 58:
 #line 304 "parser.y"
-    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("argument_expression_list", "parameter"); yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[0].value.as < EzAquarii::ASTNode > ().nodes;}
+    {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("assignment_expression", "parameter"); yylhs.value.as < EzAquarii::ASTNode > ().nodes = yystack_[0].value.as < EzAquarii::ASTNode > ().nodes;}
 #line 1147 "parser.cpp"
     break;
 
@@ -1522,7 +1522,7 @@ namespace  EzAquarii  {
   case 116:
 #line 520 "parser.y"
     {yylhs.value.as < EzAquarii::ASTNode > () = ASTNode("jump_statement"); 
-        yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("RETURN", "return"));}
+        yylhs.value.as < EzAquarii::ASTNode > ().addNode(ASTNode("RETURN", "return")).addNode(yystack_[1].value.as < EzAquarii::ASTNode > ());}
 #line 1527 "parser.cpp"
     break;
 

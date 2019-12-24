@@ -301,7 +301,7 @@ postfix_expression:
 
 argument_expression_list: 
     assignment_expression
-        {$$ = ASTNode("argument_expression_list", "parameter"); $$.nodes = $1.nodes;}|
+        {$$ = ASTNode("assignment_expression", "parameter"); $$.nodes = $1.nodes;}|
 	argument_expression_list COMMA assignment_expression
         {$$ = $1; $$.addNodes($3.nodes);}
 	;
@@ -518,7 +518,7 @@ jump_statement:
         $$.addNode(ASTNode("RETURN", "return"));}|
 	RETURN expression SEMMI
         {$$ = ASTNode("jump_statement"); 
-        $$.addNode(ASTNode("RETURN", "return"));}
+        $$.addNode(ASTNode("RETURN", "return")).addNode($2);}
 	;
 
 expression_statement: 

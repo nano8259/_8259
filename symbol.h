@@ -72,13 +72,14 @@ class Symbol{
 
         void setAliasNo(int no);
 
-        enum AliasType{UNKNOWN, V, TEMP};// 标志别名的类型，UNKNOWN一般是函数
+        enum AliasType{UNKNOWN, V, TEMP};// 标志别名的类型，UNKNOWN一般是函数,V1,T2
         
+        AliasType alias_type; // 别名的类别
+        int alias_no; // 别名的序号
 
     private:
         std::string name; // 变量名
-        AliasType alias_type; // 别名的类别
-        int alias_no; // 别名的序号
+
         int level; // 层号
         Type type; // 类型
         int label; // 标记
@@ -112,6 +113,9 @@ class SymbolTable{
         Symbol* search(std::string s);
         // 从后向前以名字检索符号表，检索到后返回Index，若没找到就返回-1
         int searchIndex(std::string s);
+        // 从后向前检索别名，找到后返回index
+        int searchV(int no);
+        int searchTemp(int no);
         // 存储符号表的栈，因为stack不提供遍历，所以换使用list
         std::vector<Symbol> symbol_table;
         int getLevelNow();

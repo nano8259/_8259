@@ -9,11 +9,11 @@ class OPN{
     public:
         enum Kind{
             NOTHING,
+            V, // 变量的别名 1
+            TEMP, // 临时变量的别名 2
             INT,
-            V, // 变量的别名
-            TEMP, // 临时变量的别名
             LABEL,
-            FUNC
+            FUNCTION // 与宏定义冲突了
         } kind;
 
         int val;
@@ -51,8 +51,8 @@ class TACNode{
         void setOpn1(OPN opn);
         void setOpn2(OPN opn);
         void setResult(OPN opn);
-
-        void display();
+        // 返回输出的字符串以供写入文件
+        std::string display();
 };
 
 }

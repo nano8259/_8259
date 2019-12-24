@@ -102,6 +102,8 @@ Symbol::Symbol(){
 
 Symbol::Symbol(int le, Type::PlainType t, int o, int no)
 :alias_type(TEMP), alias_no(no), level(le), label(VAR), offset(o){
+    type = Type(t);
+    width = type.width;
 }
 
 Symbol::Symbol(std::string n, int le, Type::PlainType t, int la, int o)
@@ -136,6 +138,12 @@ void Symbol::printSymbol(){
     string label_str;
     string parameter_str;
     string alias_str;
+    string print_name; // 若为临时变量，则没有name
+    if (alias_type == TEMP){
+        print_name = "";
+    }else{
+        print_name = name;
+    }
     switch (label)
     {
     case FUNC: 
@@ -166,7 +174,7 @@ void Symbol::printSymbol(){
     default:
         break;
     }
-    cout << name << "\t" << alias_str << "\t" << level << "\t" << type_str << "\t" << label_str << "\t" << offset << "\t" << width << "\t" << parameter_str << endl;
+    cout << print_name << "\t" << alias_str << "\t" << level << "\t" << type_str << "\t" << label_str << "\t" << offset << "\t" << width << "\t" << parameter_str << endl;
 }
 
 void Symbol::addParameter(Type t){
@@ -190,8 +198,11 @@ int Symbol::getLevel(){
 }
 
 SymbolTable::SymbolTable()
-:level_now(0), offset_now(0), v_no_now(0), temp_no_now(0)
-{    
+:level_now(0), offset_now(0), v_no_now(0), temp_no_now(0){    
+    //添加两个默认的函数
+    addSymbol("read", Type::PlainType::INT, FUNC);
+    addSymbol("write", Type::PlainType::INT, FUNC);
+    symbol_table[symbol_table.size() - 1].parameter_list.push_back(Type(Type::PlainType::INT));
 }
 
 Symbol SymbolTable::addSymbol(std::string n, Type::PlainType t, int la){
@@ -218,6 +229,7 @@ Symbol SymbolTable::addSymbol(std::string n, Type::PlainType t, int la){
 Symbol SymbolTable::addTempSymbol(Type::PlainType t){
     Symbol s = Symbol(level_now, t, offset_now, temp_no_now++);
     offset_now += s.width;
+    symbol_table.push_back(s);
     return s;
 }
 
@@ -285,6 +297,7 @@ void SymbolTable::printTable(){
     cout << "----------------------------------------------------" << endl;
     cout << "name\talias\tlevel\ttype\tlable\toffset\twidth\tparameters" << endl;
     for(int i = 0; i < symbol_table.size(); i++){
+        // cout << "here" << i << endl;
         symbol_table[i].printSymbol();
     }
 }
@@ -313,4 +326,22 @@ int SymbolTable::searchIndex(std::string s){
 
 int SymbolTable::getLevelNow(){
     return level_now;
+}
+
+int SymbolTable::searchV(int no){
+    for(int i = symbol_table.size() - 1; i > -1; i--){
+        if(symbol_table[i].alias_type == Symbol::AliasType::V && symbol_table[i].alias_no == no){
+            return i;
+        }
+    }
+    return -1;
+}
+
+int SymbolTable::searchTemp(int no){
+    for(int i = symbol_table.size() - 1; i > -1; i--){
+        if(symbol_table[i].alias_type == Symbol::AliasType::TEMP && symbol_table[i].alias_no == no){
+            return i;
+        }
+    }
+    return -1;
 }

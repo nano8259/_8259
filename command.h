@@ -61,6 +61,11 @@ class ASTNode{
 
         int pos;                       //语法单位所在位置行号
 
+        std::vector<ASTNode> Ts; // 对中间代码生成有意义的子树的列表
+        //std::vector<Type> types; // 函数定义的参数的类型列表
+        std::vector<std::string> IDs; // 表达式使用的标识符列表
+        std::string exp_op; //// 表达式使用的操作符
+
         std::vector<TACNode> code; // 存放该节点对应的代码 
         int place;                     //存放（临时）变量在符号表的位置序号
         int Etrue ,Efalse;       //对布尔表达式的翻译时，真假转移目标的标号
@@ -68,6 +73,18 @@ class ASTNode{
         int type;                      //用以标识表达式结点的类型
         int offset;                     //偏移量
         int width;                     //占数据字节数
+
+        // 合并函数，代码插在此树目前的代码后面，合并后的代码储存在此语法树节点中
+        void merge(std::vector<TACNode> c);
+        // 合并这棵树的代码
+        void merge(ASTNode n);
+        // 合并函数，仅合并一句代码
+        void merge(TACNode c);
+
+        void displayCode();
+
+        void debug_display_all_code();
+
    private:
         
 };

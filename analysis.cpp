@@ -1,7 +1,7 @@
 #include <iostream>
 #include "analysis.h"
 #include "genir.h"
-
+#include <fstream>
 #include <regex>
 
 using namespace EzAquarii;
@@ -12,13 +12,16 @@ using std::regex;
 
 ASTNode root;
 SymbolTable st;
-//SymbolTable st;
+// 全局变量：写入中间代码的文件
+std::ofstream irfile("fibo.ir");
+int new_label_now = 0; // 若目前生成一个标号的话，这个标号的序号应当是多少
+int gen_label_now = 0; // 若目前生成一个标号语句的话，这个语句的标号应该是多少
 
 void EzAquarii::passRoot(ASTNode r){
     root = r;    
     findSymbol(root);
 }
-
+//这里是先根遍历的，尝试改成后根遍历
 void EzAquarii::findSymbol(ASTNode n){
     // 这个名字不合适，因为找引用的时候也用的是这个函数
     if(n.name == "declaration"){
@@ -35,6 +38,9 @@ void EzAquarii::findSymbol(ASTNode n){
             findSymbol(n.nodes[i]);
         }
         st.scopeEnd();
+    }else if(n.name == "selection_statement"){
+        //cout << "get_selection_statement" << endl;
+        analysis_selection_statement(n);
     }else if (regex_match(n.name, regex(".*expression"))){
         // 找到一个带有enpression的句子后，就进行分析
         analysisExpression(n);
@@ -45,7 +51,188 @@ void EzAquarii::findSymbol(ASTNode n){
         }
     }
     
-    if(n.name == "program") startGenTAC();
+    if(n.name == "program") {
+        startGenTAC();
+        // n.debug_display_all_code();
+    }
+}
+
+// 后根遍历，其实还是应该先根遍历
+/*
+void EzAquarii::findSymbol(ASTNode n){
+    // 这个名字不合适，因为找引用的时候也用的是这个函数
+    if(n.name == "selection_statement") cout << "here" << endl;
+    if(n.name != "declaration" && n.name !="function_definition" &&
+        n.name != "compound_statement" && !regex_match(n.name, regex(".*expression"))){ 
+        // 不是以上节点，则继续分析其子节点
+        for(int i = 0; i < n.nodes.size(); i++){
+            findSymbol(n.nodes[i]);
+        }
+    }else if(n.name == "declaration"){
+        createSymbolDeclaration(n);
+    }else if (n.name == "function_definition"){
+        // 因为函数的定义中仍然会有需要分析的语句，所以还需要对字句依次分析
+        for(int i = 0; i < n.nodes.size(); i++){
+            findSymbol(n.nodes[i]);
+        }
+        createFunctionDefinition(n);
+    }else if (n.name == "compound_statement"){
+        st.scopeStart();
+        for(int i = 0; i < n.nodes.size(); i++){
+            findSymbol(n.nodes[i]);
+        }
+        st.scopeEnd();
+    }else if(n.name == "selection_statement"){
+        cout << "get_selection_statement" << endl;
+        analysis_selection_statement(n);
+    }
+    else if (regex_match(n.name, regex(".*expression"))){
+        // 找到一个带有enpression的句子后，就进行分析
+        analysisExpression(n);
+    }
+    if(n.name == "program") {
+        startGenTAC();
+    }
+}
+*/
+
+void EzAquarii::analysis_selection_statement(ASTNode &n){
+    //cout << "analysis_selection_statement" << endl;
+    // !!!这里假设只有IF，没有ELSE
+    n.Snext = new_label_now++;
+    n.Ts.push_back(n.nodes[1]); // 一个条件表达式
+    n.Ts.push_back(n.nodes[2]); // 一个语句
+    n.Ts[0].Etrue = new_label_now++;
+    n.Ts[0].Efalse = n.Snext;
+    n.Ts[1].Snext = n.Snext;
+    analysis_expression(n.Ts[0]);
+}
+
+void EzAquarii::analysis_expression(ASTNode &n){
+    //cout << "analysis_expression" << endl;
+    // !!!这里假设每一个三目表达式都是计算式，每一个两目表达式都是函数调用
+    if(n.nodes.size() == 3){
+        //计算式
+        if(n.nodes[1].name == "OR"){
+            // 首先为这个表达式整一个临时变量存着
+            st.addTempSymbol(Type::PlainType::INT);
+            n.place = st.symbol_table.size()-1;
+            // 或，使用短路，前面表达式的真指向条件判断表达式的真，前面表达式的假指向后面表达式
+            // 后面表达式的真指向条件判断表达式的真，后面表达式的假指向条件判断表达式的Snext
+            n.nodes[0].Etrue = n.Etrue;
+            n.nodes[0].Efalse = new_label_now++;
+            analysis_expression(n.nodes[0]);
+            // 这行中间代码是Efalse的中间代码
+
+            // 开始合并IF语句中条件表达式的代码
+            n.merge(n.nodes[0]);
+            n.code.push_back(TACNode(TACNode::OP::LABEL));
+            n.code[n.code.size()-1].setResult(OPN(OPN::Kind::LABEL, n.nodes[0].Efalse));
+
+            n.nodes[2].Etrue = n.Etrue;
+            n.nodes[2].Efalse = n.Snext;
+            analysis_expression(n.nodes[2]);
+
+            n.merge(n.nodes[2]);
+        } else{
+            // 除了OR之外的表达式，都需要先找出来OPN
+            OPN opn1, opn2;
+            if(n.nodes[0].name != "primary_expression" && n.nodes[0].name != "constant"){
+                // !!!这里假设所有的primary_expression都是ID
+                // 不是这两种的话，说明是还需要分析的表达式
+                // 表达式的值就是place对应的temp
+                analysis_expression(n.nodes[0]); // 首先对子表达式进行分析
+                opn1 = symbol_to_opn(st.symbol_table[n.nodes[0].place]);
+            }else if(n.nodes[0].name == "primary_expression"){
+                opn1 = symbol_to_opn(st.symbol_table[st.searchIndex(n.nodes[0].nodes[0].value)]);
+            }else if(n.nodes[0].name == "constant"){
+                // 这里还需要一行中间代码将立即数存入寄存器
+                n.code.push_back(TACNode(TACNode::OP::ASSIGN));
+                n.code[n.code.size()-1].setOpn1(OPN(OPN::Kind::INT, std::stoi(n.nodes[0].nodes[0].value)));
+                st.addTempSymbol(Type::PlainType::INT);
+                int temp_place = st.symbol_table.size()-1;
+                n.code[n.code.size()-1].setResult(symbol_to_opn(st.symbol_table[temp_place]));
+                opn1 = symbol_to_opn(st.symbol_table[temp_place]);
+            }
+            if(n.nodes[2].name != "primary_expression" && n.nodes[2].name != "constant"){
+                // 第二个OPN同理
+                analysis_expression(n.nodes[2]);
+                opn2 = symbol_to_opn(st.symbol_table[n.nodes[2].place]);
+            }else if(n.nodes[2].name == "primary_expression"){
+                opn2 = symbol_to_opn(st.symbol_table[st.searchIndex(n.nodes[2].nodes[0].value)]);
+            }else if(n.nodes[2].name == "constant"){
+                // 这里还需要一行中间代码将立即数存入寄存器
+                n.code.push_back(TACNode(TACNode::OP::ASSIGN));
+                n.code[n.code.size()-1].setOpn1(OPN(OPN::Kind::INT, std::stoi(n.nodes[2].nodes[0].value)));
+                st.addTempSymbol(Type::PlainType::INT);
+                st.printTable();
+                int temp_place = st.symbol_table.size()-1;
+                n.code[n.code.size()-1].setResult(symbol_to_opn(st.symbol_table[temp_place]));
+                opn2 = symbol_to_opn(st.symbol_table[temp_place]);
+            }
+            // 找到OPN后开始生成代码
+            if(n.nodes[1].name == "assignment_operator"){
+                // !!!为了实现复合赋值运算符，所以不是非终结符，这里假设仅为“=”
+                n.code.push_back(TACNode(TACNode::OP::ASSIGN));
+                n.code[n.code.size()-1].setResult(opn1);
+                n.code[n.code.size()-1].setOpn1(opn2);
+            }else{
+                // 首先为这个表达式整一个临时变量存着
+                st.addTempSymbol(Type::PlainType::INT);
+                n.place = st.symbol_table.size()-1;
+                // !!!在本程序中只有加法和EQ，所以正常的式子只写加法和EQ
+                if(n.nodes[1].name == "PLUS_OP"){
+                    n.code.push_back(TACNode(TACNode::OP::PLUS));
+                    n.code[n.code.size()-1].setResult(symbol_to_opn(st.symbol_table[n.place]));
+                    n.code[n.code.size()-1].setOpn1(opn1);
+                    n.code[n.code.size()-1].setOpn2(opn2);
+                }else if(n.nodes[1].name == "EQ"){
+                    n.code.push_back(TACNode(TACNode::OP::EQ));
+                    n.code[n.code.size()-1].setResult(OPN(OPN::Kind::LABEL, n.Etrue));
+                    n.code[n.code.size()-1].setOpn1(opn1);
+                    n.code[n.code.size()-1].setOpn2(opn2);
+                    n.code.push_back(TACNode(TACNode::GOTO));
+                    n.code[n.code.size()-1].setResult(OPN(OPN::Kind::LABEL, n.Efalse));
+                }
+
+
+            }
+        }
+    }
+    n.displayCode();
+    cout << "" <<endl;
+}
+
+
+OPN EzAquarii::symbol_to_opn(Symbol s){
+    switch (s.alias_type)
+    {
+    case Symbol::AliasType::V:
+        return OPN(OPN::Kind::V, s.alias_no);
+        break;
+    case Symbol::AliasType::TEMP:
+        return OPN(OPN::Kind::TEMP, s.alias_no);
+        break;
+    default:
+        break;
+    }
+    return OPN(OPN::Kind::NOTHING, 0);
+}
+
+OPN EzAquarii::symbol_index_to_opn(int i){
+    Symbol s = st.symbol_table[i];
+    switch (s.alias_type)
+    {
+    case Symbol::AliasType::V:
+        return OPN(OPN::Kind::V, s.alias_no);
+        break;
+    case Symbol::AliasType::TEMP:
+        return OPN(OPN::Kind::TEMP, s.alias_no);
+        break;
+    default:
+        break;
+    }
+    return OPN(OPN::Kind::NOTHING, 0);
 }
 
 void EzAquarii::createSymbolDeclaration(ASTNode n){
@@ -130,16 +317,20 @@ void EzAquarii::createFunctionDeclarationParameters(ASTNode n){
     // ？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
     // 要搞懂这里的地址问题
     st.symbol_table[st.symbol_table.size() - 1].isDefined = false;
-    ASTNode node_list = n.nodes[1]; // "parameter_list"节点为第二个节点
-    for(int i = 0; i < node_list.nodes.size(); i++){
-        // node_list的nodes里的节点均为parameter_declaration节点
-        std::string type_str = node_list.nodes[i].nodes[0].nodes[0].name;
-        Type::PlainType type;
-        if(type_str == "INT"){type = Type::PlainType::INT;}
-        else if(type_str == "FLOAT"){type = Type::PlainType::FLOAT;}
-        else if(type_str == "CHAR"){type = Type::PlainType::CHAR;}
-        st.symbol_table[st.symbol_table.size() - 1].addParameter(Type(type));
-        // st.printTable();
+    if(n.nodes.size() >= 2){
+        ASTNode node_list = n.nodes[1]; // "parameter_list"节点为第二个节点
+        for(int i = 0; i < node_list.nodes.size(); i++){
+            // node_list的nodes里的节点均为parameter_declaration节点
+            std::string type_str = node_list.nodes[i].nodes[0].nodes[0].name;
+            Type::PlainType type;
+            if(type_str == "INT"){type = Type::PlainType::INT;}
+            else if(type_str == "FLOAT"){type = Type::PlainType::FLOAT;}
+            else if(type_str == "CHAR"){type = Type::PlainType::CHAR;}
+            st.symbol_table[st.symbol_table.size() - 1].addParameter(Type(type));
+            // st.printTable();
+        }   
+    }else{
+        return;
     }
 }
 
@@ -174,13 +365,13 @@ bool EzAquarii::createFunctionDefinition(ASTNode n){
     if(n.nodes[1].nodes.size() == 2){
         ASTNode para_list_node = n.nodes[1].nodes[1];
         for(int i = 0; i < para_list_node.nodes.size(); i++){
-        para_list.push_back(para_list_node.nodes[i].nodes[0].nodes[0].value);
+            para_list.push_back(para_list_node.nodes[i].nodes[0].nodes[0].value);
         }
     }
     // 所需信息：类型、函数名、参数列表均已找到，下面开始检查
     Symbol* sp = st.search(id);
     if(sp == NULL){
-        // 没有没有找到同名函数，则在符号表中添加这个函数
+        // 没有找到同名函数，则在符号表中添加这个函数
         st.addSymbol(id, type, FUNC);
         st.symbol_table[st.symbol_table.size() - 1].isDefined = true;
         createFunctionDeclarationParameters(n.nodes[1]);
@@ -211,6 +402,16 @@ bool EzAquarii::createFunctionDefinition(ASTNode n){
             }
         }
     }
+
+
+    // 下面开始生成function的中间代码
+    TACNode code = TACNode(TACNode::OP::FUNCTION);
+    code.setResult(OPN(OPN::Kind::FUNCTION, id));
+    n.code.push_back(code);
+    n.Snext = new_label_now++;
+    n.nodes[2].Snext = n.Snext; // compound_statement
+
+
     st.symbol_table[st.searchIndex(id)].isDefined = true;
     return true;
 }
@@ -308,4 +509,14 @@ void EzAquarii::printErrorInfo(int n, std::string id){
 
 void EzAquarii::test(){
     cout << "get" << endl;
+}
+
+int EzAquarii::newTemp(){
+    // 目前只有INT
+    Symbol s =  st.addTempSymbol(Type::PlainType::INT);
+    return st.symbol_table.size() - 1;
+}
+
+int EzAquarii::newLabel(){
+    return new_label_now++;
 }

@@ -96,6 +96,12 @@ void ASTNode::display(std::vector<int> v){
         }
     }
 
+void ASTNode::displayCode(){
+    for(int i = 0; i < code.size(); i++){
+        code[i].display();
+    }
+}
+
 ASTNode& ASTNode::addNode(ASTNode _node){
     nodes.push_back(_node);
     return *this;
@@ -106,6 +112,30 @@ ASTNode& ASTNode::addNodes(std::vector<ASTNode> ns){
         nodes.push_back(ns[i]);
     }
     return *this;
+}
+
+void ASTNode::merge(std::vector<TACNode> c){
+    for(int i = 0; i < c.size(); i++){
+        code.push_back(c[i]);
+    }
+}
+
+void ASTNode::merge(ASTNode n){
+    for(int i = 0; i < n.code.size(); i++){
+        code.push_back(n.code[i]);
+    }
+}
+
+void ASTNode::debug_display_all_code(){
+    cout << "hh" << endl;
+    displayCode();
+    for(int i = 0; i < nodes.size(); i++){
+        nodes[i].debug_display_all_code();
+    }
+}
+
+void ASTNode::merge(TACNode c){
+    code.push_back(c);
 }
 
 Command::Command(const std::string &name, const std::vector<uint64_t> arguments) :

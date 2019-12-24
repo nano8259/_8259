@@ -17,6 +17,7 @@ OPN::OPN()
 
 OPN::OPN(Kind k, int v)
 :kind(k), val(v){
+    //cout << "get gen" << k << v <<endl;
 }
 
 OPN::OPN(Kind k, std::string n)
@@ -29,6 +30,7 @@ std::string OPN::opnString(){
     switch (kind)
     {
     case NOTHING:
+        //cout << "haha" << endl;
         kind_str = "";
         val_str = "";
         break;
@@ -48,14 +50,14 @@ std::string OPN::opnString(){
         kind_str = "label";
         val_str = std::to_string(val);
         break;
-    case FUNC:
+    case FUNCTION:
         kind_str = "";
         val_str = func_name;
         break;
     default:
         break;
     }
-
+    //cout << kind_str << val_str << endl;
     return (kind_str + val_str);
 }
 
@@ -74,7 +76,7 @@ void TACNode::setResult(OPN opn){
     result = opn;
 }
 
-void TACNode::display(){
+std::string TACNode::display(){
     std::string str;
     switch (op)
     {
@@ -85,7 +87,7 @@ void TACNode::display(){
         str = "FUNCTION " + result.opnString() + " :";
         break;
     case ASSIGN:
-        str = opn1.opnString() + " := " + opn2.opnString();
+        str = result.opnString() + " := " + opn1.opnString();
         break;
     case PLUS:
         str = result.opnString() + " := " + opn2.opnString() + " + " + opn1.opnString();
@@ -142,4 +144,5 @@ void TACNode::display(){
         break;
     }
     cout << str << endl;
+    return str;
 }
