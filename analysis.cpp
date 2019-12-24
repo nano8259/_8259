@@ -14,6 +14,8 @@ ASTNode root;
 SymbolTable st;
 // 全局变量：写入中间代码的文件
 std::ofstream irfile("fibo.ir");
+// 写入汇编代码
+std::ofstream acfile("ac.s");
 int new_label_now = 0; // 若目前生成一个标号的话，这个标号的序号应当是多少
 
 void EzAquarii::passRoot(ASTNode r){
@@ -58,10 +60,34 @@ void EzAquarii::findSymbol(ASTNode &n){
     }
     
     if(n.name == "program") {
-        startGenTAC();
+        toAssembly(n);
         n.displayCode();
         // n.debug_display_all_code();
     }
+}
+
+void EzAquarii::toAssembly(ASTNode n){
+    std::vector<TACNode> code = n.code;
+    acfile << ".data" << endl;
+    acfile << "_Prompt: .asciiz \"Enter an integer:  \"" << endl;
+    acfile << "_ret: .asciiz \"\\n\"" << endl;
+    acfile << ".globl main" << endl;
+    acfile << ".text" << endl;
+    acfile << "read:" << endl;
+    acfile << "  la $a0,_Prompt" << endl;
+    acfile << "  li $v0,4" << endl;
+    acfile << "  syscall" << endl;
+    acfile << "  li $v0,5" << endl;
+    acfile << "  syscall" << endl;
+    acfile << "  jr $ra" << endl;
+    acfile << "write:" << endl;
+    acfile << "  li $v0,1" << endl;
+    acfile << "  syscall" << endl;
+    acfile << "  li $v0,4" << endl;
+    acfile << "  la $a0,_ret" << endl;
+    acfile << "  syscall" << endl;
+    acfile << "  move $v0,$0" << endl;
+    acfile << "  jr $ra" << endl;
 }
 
 // 后根遍历，其实还是应该先根遍历

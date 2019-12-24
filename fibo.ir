@@ -18,30 +18,17 @@ temp9 := #2
 temp10 := v0 - temp9
 ARG temp10
 temp8 := CALL fibo
-temp5 := temp8
-RETURN 
+temp11 := temp5 + temp8
+RETURN temp11
 LABEL label0 :
 FUNCTION main :
-temp15 := CALL read
-v6 := temp15
-temp16 := #1
-v8 := temp16
-ARG v8
-temp11 := CALL fibo
-v7 := temp11
+temp12 := CALL read
+v6 := temp12
+ARG v6
+temp13 := CALL fibo
+v7 := temp13
 ARG v7
-temp12 := CALL write
-temp13 := #1
-temp14 := v8 + temp13
-v8 := temp14
-ARG v8
-temp11 := CALL fibo
-v7 := temp11
-ARG v7
-temp12 := CALL write
-temp13 := #1
-temp14 := v8 + temp13
-v8 := temp14
-temp17 := #1
-RETURN temp17
+temp14 := CALL write
+temp15 := #1
+RETURN temp15
 LABEL label4 :

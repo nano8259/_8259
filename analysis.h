@@ -41,5 +41,7 @@ void analysis_jump_statement(ASTNode &n);
 OPN symbol_to_opn(Symbol s);
 OPN symbol_index_to_opn(int i);
 
+void toAssembly(ASTNode n);
+
 }
 #endif
