@@ -38,7 +38,8 @@ void EzAquarii::findSymbol(ASTNode &n){
         code.setResult(OPN(OPN::Kind::LABEL, n.Snext));
         n.code.push_back(code); 
     }else if (n.name == "compound_statement"){
-        st.scopeStart();
+        // 开始代码段的代码加在这里会导致函数的形参无法正确的获得偏移量
+        // st.scopeStart();
         for(int i = 0; i < n.nodes.size(); i++){
             findSymbol(n.nodes[i]);
         }
@@ -167,19 +168,22 @@ void EzAquarii::toAssembly(ASTNode n){
 
                         // !!!这里假设只有一个参数
                         acfile << "  move $t0,$sp\n"; 
-                        acfile << "  addi $sp, $sp, -" << code_now.opn1.offset << "\n";
+                        acfile << "  addi $sp, $sp, -" << st.symbol_table[st.searchIndex(code_now.opn1.func_name)].width << "\n";
                         acfile << "  sw $ra,0($sp)\n"; 
                         
 
                         // !!!
                         //acfile << "  lw $t1, %d($t0)\n", p->result.offset); 
-                        acfile << "  lw $t1, 20($t0)\n"; 
+                        acfile << "  lw $t1, " << code[i-1].result.offset << "($t0)\n"; // 应该是arg那句
                         acfile << "  move $t3,$t1\n";
-                        acfile << "  sw $t3,20($sp)\n"; 
+                        //acfile << "  sw $t3," << st.symbol_table[st.searchIndex(code_now.opn1.func_name)+1].offset << "($sp)\n"; 
+                        acfile << "  sw $t3," << 4 << "($sp)\n";
+                        //不能这样写，用寄存器传参吧 v0
+                        //acfile << "  move $v0,$t3\n";
 
                         acfile << "  jal " << code_now.opn1.func_name << "\n"; 
                         acfile << "  lw $ra,0($sp)\n"; 
-                        acfile << "  addi $sp,$sp," << code_now.opn1.offset << "\n"; 
+                        acfile << "  addi $sp,$sp," << st.symbol_table[st.searchIndex(code_now.opn1.func_name)].width << "\n"; 
                         acfile << "  sw $v0," << code_now.result.offset <<"($sp)\n"; 
                         break;
             case TACNode::OP::RETURN:
@@ -191,45 +195,6 @@ void EzAquarii::toAssembly(ASTNode n){
     }
 }
 
-// 后根遍历，其实还是应该先根遍历
-/*
-void EzAquarii::findSymbol(ASTNode n){
-    // 这个名字不合适，因为找引用的时候也用的是这个函数
-    if(n.name == "selection_statement") cout << "here" << endl;
-    if(n.name != "declaration" && n.name !="function_definition" &&
-        n.name != "compound_statement" && !regex_match(n.name, regex(".*expression"))){ 
-        // 不是以上节点，则继续分析其子节点
-        for(int i = 0; i < n.nodes.size(); i++){
-            findSymbol(n.nodes[i]);
-        }
-    }else if(n.name == "declaration"){
-        createSymbolDeclaration(n);
-    }else if (n.name == "function_definition"){
-        // 因为函数的定义中仍然会有需要分析的语句，所以还需要对字句依次分析
-        for(int i = 0; i < n.nodes.size(); i++){
-            findSymbol(n.nodes[i]);
-        }
-        createFunctionDefinition(n);
-    }else if (n.name == "compound_statement"){
-        st.scopeStart();
-        for(int i = 0; i < n.nodes.size(); i++){
-            findSymbol(n.nodes[i]);
-        }
-        st.scopeEnd();
-    }else if(n.name == "selection_statement"){
-        cout << "get_selection_statement" << endl;
-        analysis_selection_statement(n);
-    }
-    else if (regex_match(n.name, regex(".*expression"))){
-        // 找到一个带有enpression的句子后，就进行分析
-        analysisExpression(n);
-    }
-    if(n.name == "program") {
-        startGenTAC();
-    }
-}
-*/
-
 void EzAquarii::analysis_selection_statement(ASTNode &n){
     //cout << "analysis_selection_statement" << endl;
     // !!!这里假设只有IF，没有ELSE，而且只有一个语句
@@ -238,6 +203,7 @@ void EzAquarii::analysis_selection_statement(ASTNode &n){
     n.Ts.push_back(n.nodes[2]); // 一个语句
     n.Ts[0].Etrue = new_label_now++;
     n.Ts[0].Efalse = n.Snext;
+    n.Ts[0].Snext = n.Snext;
     n.Ts[1].Snext = n.Snext;
     analysis_expression(n.Ts[0]);
     analysis_statement(n.Ts[1]);
@@ -248,7 +214,7 @@ void EzAquarii::analysis_selection_statement(ASTNode &n){
     n.merge(n.Ts[1]);
     TACNode code2 = TACNode(TACNode::OP::LABEL);
     code2.setResult(OPN(OPN::Kind::LABEL, n.Snext));
-     n.code.push_back(code2); 
+    n.code.push_back(code2); 
 }
 
 void EzAquarii::analysis_expression(ASTNode &n){
@@ -569,6 +535,7 @@ void EzAquarii::createFunctionDeclarationParameters(ASTNode n){
             st.symbol_table[st.symbol_table.size() - 1].addParameter(Type(type));
             //cout << node_list.nodes[i].nodes[0].nodes[1].value << endl;
             // if (i == 1)
+            // 这里创建参数
             st.addSymbol(node_list.nodes[i].nodes[1].nodes[0].value ,type , VAR);
             // st.printTable();
         }   
@@ -620,12 +587,14 @@ bool EzAquarii::createFunctionDefinition(ASTNode &n){
         // 没有找到同名函数，则在符号表中添加这个函数
         st.addSymbol(id, type, FUNC);
         st.symbol_table[st.symbol_table.size() - 1].isDefined = true;
+        // 函数的本身的声明还是在原来的代码段里，但是参数需要放到新的代码段中
+        st.scopeStart();
         createFunctionDeclarationParameters(n.nodes[1]);
         // 还要加上形参
         // !!!这里假设形参只有一个且是整型
         if(n.nodes[1].nodes.size() == 2){
             // 说明是有形参的
-            st.addSymbol(id_list[0], Type::PlainType::INT, VAR);
+            // st.addSymbol(id_list[0], Type::PlainType::INT, VAR);
         }
     }else if(sp->getLabel() != FUNC){
         // 找到了同名符号，但是并非函数，则报错并返回
@@ -667,8 +636,6 @@ bool EzAquarii::createFunctionDefinition(ASTNode &n){
     }
     n.Snext = new_label_now++;
     n.nodes[2].Snext = n.Snext; // compound_statement
-    //analysis_compound_statement(n.nodes[2]);
-
 
     st.symbol_table[st.searchIndex(id)].isDefined = true;
     return true;

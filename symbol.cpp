@@ -276,6 +276,7 @@ void SymbolTable::scopeStart(){
     symbol_scope_sp.push(symbol_table.size());
     // 记录当前的偏移量
     symbol_scope_so.push(offset_now);
+    offset_now = 4;//从4开始，前4个字节存储ra
 }
 
 void SymbolTable::scopeEnd(){
@@ -286,10 +287,12 @@ void SymbolTable::scopeEnd(){
 
     i = symbol_table.size() - symbol_scope_sp.top();
     for(symbol_scope_sp.pop(); i > 0; i--){
-        //symbol_table.pop_back();
+        symbol_table.pop_back();
     }
 
-    //offset_now = symbol_scope_so.top();
+    symbol_table[symbol_table.size()-1].width = offset_now;
+
+    offset_now = symbol_scope_so.top();
     symbol_scope_so.pop();
 }
 
