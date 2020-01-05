@@ -16,12 +16,21 @@ OPN::OPN()
 }
 
 OPN::OPN(Kind k, int v)
-:kind(k), val(v){
+:kind(k), val(v), offset(-1){
+    //cout << "get gen" << k << v <<endl;
+}
+
+OPN::OPN(Kind k, int v, int of)
+:kind(k), val(v), offset(of){
     //cout << "get gen" << k << v <<endl;
 }
 
 OPN::OPN(Kind k, std::string n)
-:kind(k), func_name(n){
+:kind(k), func_name(n), offset(-1){
+}
+
+OPN::OPN(Kind k, std::string n, int of)
+:kind(k), func_name(n), offset(of){
 }
 
 std::string OPN::opnString(){
@@ -58,7 +67,8 @@ std::string OPN::opnString(){
         break;
     }
     //cout << kind_str << val_str << endl;
-    return (kind_str + val_str);
+    return (kind_str + val_str + ":" + std::to_string(offset));
+    //return (kind_str + val_str);
 }
 
 

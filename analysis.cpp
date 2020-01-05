@@ -88,6 +88,107 @@ void EzAquarii::toAssembly(ASTNode n){
     acfile << "  syscall" << endl;
     acfile << "  move $v0,$0" << endl;
     acfile << "  jr $ra" << endl;
+    for(int i = 0; i < code.size(); i++){
+        cout << i << endl;
+        TACNode code_now = code[i];
+        switch (code_now.op) {
+            case TACNode::OP::ASSIGN:
+                        if (code_now.opn1.kind==OPN::Kind::INT)
+                            acfile << "  li $t3, "<< code_now.opn1.val << endl;
+                        else {
+                            acfile << "  lw $t1, " << code_now.opn1.offset << "($sp)" << endl;
+                            acfile << "  move $t3, $t1\n" ;
+                            }
+                        acfile << "  sw $t3, " << code_now.result.offset << "($sp)\n";
+                        break;
+            case TACNode::OP::PLUS:
+            case TACNode::OP::MINUS:
+            case TACNode::OP::STAR:
+            case TACNode::OP::DIV:
+                       acfile << "  lw $t1, " << code_now.opn1.offset << "($sp)\n";
+                       acfile << "  lw $t2, " << code_now.opn2.offset << "($sp)\n";
+                       if (code_now.op==TACNode::OP::PLUS)       acfile << "  add $t3,$t1,$t2\n";
+                       else if (code_now.op==TACNode::OP::MINUS) acfile << "  sub $t3,$t1,$t2\n";
+                            else if (code_now.op==TACNode::OP::STAR)  acfile << "  mul $t3,$t1,$t2\n";
+                                 else  {acfile << "  div $t1, $t2\n";
+                                        acfile << "  mflo $t3\n";
+                                        }
+                        acfile << "  sw $t3, " << code_now.result.offset << "($sp)\n";
+                        break;
+            case TACNode::OP::FUNCTION:
+                        acfile << "\n" << code_now.result.func_name << ":\n";
+                        if (code_now.result.func_name == "main")
+                            //acfile << "  addi $sp, $sp, -" << st.symbol_table[code_now.result.offset].offset << "\n" );
+                            acfile << "  addi $sp, $sp, -" << code_now.result.offset << "\n";
+                        break;
+            case TACNode::OP::PARAM:
+                        break;
+            case TACNode::OP::LABEL: acfile << "label" << code_now.result.val <<":\n";
+                        break;
+            case TACNode::OP::GOTO:  acfile << "  j label" << code_now.result.val << "\n";
+                        break;
+            case TACNode::OP::LT:
+            case TACNode::OP::LE:
+            case TACNode::OP::AE:
+            case TACNode::OP::AT:
+            case TACNode::OP::EQ:
+            case TACNode::OP::NE:
+                        acfile << "  lw $t1, " << code_now.opn1.offset << "($sp)\n";
+                        acfile << "  lw $t2, " << code_now.opn2.offset << "($sp)\n";
+                        //if (code_now.op==JLE) acfile << "  ble $t1,$t2,%s\n", code_now.result.id);
+                        //else if (code_now.op==JLT) acfile << "  blt $t1,$t2,%s\n", code_now.result.id);
+                        //else if (code_now.op==JGE) acfile << "  bge $t1,$t2,%s\n", code_now.result.id);
+                        //else if (code_now.op==JGT) acfile << "  bgt $t1,$t2,%s\n", code_now.result.id);
+                        if (code_now.op==TACNode::OP::EQ)  acfile << "  beq $t1,$t2,label" << code_now.result.val << "\n";
+                        //else                 acfile << "  bne $t1,$t2,%s\n", code_now.result.id);
+                        break;
+            case TACNode::OP::ARG:   
+                        break;
+            case TACNode::OP::CALL_R:  
+                        if (code_now.opn1.func_name == "read"){ 
+                            acfile << "  addi $sp, $sp, -4\n";
+                            acfile << "  sw $ra,0($sp)\n"; 
+                            acfile << "  jal read\n"; 
+                            acfile << "  lw $ra,0($sp)\n"; 
+                            acfile << "  addi $sp, $sp, 4\n";
+                            acfile << "  sw $v0, " << code_now.result.offset << "($sp)\n";
+                            break;
+                        }
+                        if (code_now.opn1.func_name == "write"){ 
+                            // !!!这里假设只有一个参数
+                            acfile << "  lw $a0, " << code[i-1].result.offset << "($sp)\n";
+                            acfile << "  addi $sp, $sp, -4\n";
+                            acfile << "  sw $ra,0($sp)\n";
+                            acfile << "  jal write\n";
+                            acfile << "  lw $ra,0($sp)\n";
+                            acfile << "  addi $sp, $sp, 4\n";
+                            break;
+                            }
+
+                        // !!!这里假设只有一个参数
+                        acfile << "  move $t0,$sp\n"; 
+                        acfile << "  addi $sp, $sp, -" << code_now.opn1.offset << "\n";
+                        acfile << "  sw $ra,0($sp)\n"; 
+                        
+
+                        // !!!
+                        //acfile << "  lw $t1, %d($t0)\n", p->result.offset); 
+                        acfile << "  lw $t1, 20($t0)\n"; 
+                        acfile << "  move $t3,$t1\n";
+                        acfile << "  sw $t3,20($sp)\n"; 
+
+                        acfile << "  jal " << code_now.opn1.func_name << "\n"; 
+                        acfile << "  lw $ra,0($sp)\n"; 
+                        acfile << "  addi $sp,$sp," << code_now.opn1.offset << "\n"; 
+                        acfile << "  sw $v0," << code_now.result.offset <<"($sp)\n"; 
+                        break;
+            case TACNode::OP::RETURN:
+                        acfile << "  lw $v0," << code_now.result.offset << "($sp)\n"; 
+                        acfile << "  jr $ra\n";
+                        break;
+
+        }
+    }
 }
 
 // 后根遍历，其实还是应该先根遍历
@@ -142,9 +243,12 @@ void EzAquarii::analysis_selection_statement(ASTNode &n){
     analysis_statement(n.Ts[1]);
     n.merge(n.Ts[0]);
     TACNode code = TACNode(TACNode::OP::LABEL);
-    code.setResult(OPN(OPN::Kind::LABEL, n.Snext));
+    code.setResult(OPN(OPN::Kind::LABEL, n.Ts[0].Etrue));
     n.code.push_back(code); 
     n.merge(n.Ts[1]);
+    TACNode code2 = TACNode(TACNode::OP::LABEL);
+    code2.setResult(OPN(OPN::Kind::LABEL, n.Snext));
+     n.code.push_back(code2); 
 }
 
 void EzAquarii::analysis_expression(ASTNode &n){
@@ -319,6 +423,7 @@ void EzAquarii::analysis_jump_statement(ASTNode &n){
     if(n.nodes[1].name == "constant"){
         // 这里还需要一行中间代码将立即数存入寄存器
         n.code.push_back(TACNode(TACNode::OP::ASSIGN));
+        // 立即数没有便宜地址
         n.code[n.code.size()-1].setOpn1(OPN(OPN::Kind::INT, std::stoi(n.nodes[1].nodes[0].value)));
         st.addTempSymbol(Type::PlainType::INT);
         int temp_place = st.symbol_table.size()-1;
@@ -339,10 +444,10 @@ OPN EzAquarii::symbol_to_opn(Symbol s){
     switch (s.alias_type)
     {
     case Symbol::AliasType::V:
-        return OPN(OPN::Kind::V, s.alias_no);
+        return OPN(OPN::Kind::V, s.alias_no, s.offset);
         break;
     case Symbol::AliasType::TEMP:
-        return OPN(OPN::Kind::TEMP, s.alias_no);
+        return OPN(OPN::Kind::TEMP, s.alias_no, s.offset);
         break;
     default:
         break;
@@ -353,15 +458,15 @@ OPN EzAquarii::symbol_to_opn(Symbol s){
 OPN EzAquarii::symbol_index_to_opn(int i){
     Symbol s = st.symbol_table[i];
     if (s.getLabel() == FUNC){
-        return OPN(OPN::Kind::FUNCTION, s.getName());
+        return OPN(OPN::Kind::FUNCTION, s.getName(), s.offset);
     }else{
         switch (s.alias_type)
         {
         case Symbol::AliasType::V:
-            return OPN(OPN::Kind::V, s.alias_no);
+            return OPN(OPN::Kind::V, s.alias_no, s.offset);
             break;
         case Symbol::AliasType::TEMP:
-            return OPN(OPN::Kind::TEMP, s.alias_no);
+            return OPN(OPN::Kind::TEMP, s.alias_no, s.offset);
             break;
         default:
             break;
@@ -462,8 +567,12 @@ void EzAquarii::createFunctionDeclarationParameters(ASTNode n){
             else if(type_str == "FLOAT"){type = Type::PlainType::FLOAT;}
             else if(type_str == "CHAR"){type = Type::PlainType::CHAR;}
             st.symbol_table[st.symbol_table.size() - 1].addParameter(Type(type));
+            //cout << node_list.nodes[i].nodes[0].nodes[1].value << endl;
+            // if (i == 1)
+            st.addSymbol(node_list.nodes[i].nodes[1].nodes[0].value ,type , VAR);
             // st.printTable();
         }   
+        
     }else{
         return;
     }
@@ -549,11 +658,11 @@ bool EzAquarii::createFunctionDefinition(ASTNode &n){
 
     // 下面开始生成function的中间代码
     TACNode code = TACNode(TACNode::OP::FUNCTION);
-    code.setResult(OPN(OPN::Kind::FUNCTION, id));
+    code.setResult(symbol_index_to_opn(st.searchIndex(id)));
     n.code.push_back(code);
     if(n.nodes[1].nodes.size() == 2){
         TACNode code2 = TACNode(TACNode::OP::PARAM);
-        code2.setResult(symbol_index_to_opn(st.searchIndex(id_list[0])));
+        code2.setResult(symbol_index_to_opn(st.searchIndex("a"))); // !!!
         n.code.push_back(code2);
     }
     n.Snext = new_label_now++;

@@ -7,9 +7,10 @@ LABEL label3 :
     temp2 := #2
     IF v0 == temp2 GOTO label2
     GOTO label0
-LABEL label1 :
+LABEL label2 :
     temp4 := #1
     RETURN temp4
+LABEL label1 :
     temp6 := #1
     temp7 := v0 - temp6
     ARG temp7

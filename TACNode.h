@@ -18,10 +18,13 @@ class OPN{
 
         int val;
         std::string func_name;
+        int offset;
 
         OPN();
         OPN(Kind k, int v);
         OPN(Kind k, std::string n);
+        OPN(Kind k, int v, int of);
+        OPN(Kind k, std::string n, int of);
 
         std::string opnString();
 };

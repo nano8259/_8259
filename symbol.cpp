@@ -286,10 +286,10 @@ void SymbolTable::scopeEnd(){
 
     i = symbol_table.size() - symbol_scope_sp.top();
     for(symbol_scope_sp.pop(); i > 0; i--){
-        symbol_table.pop_back();
+        //symbol_table.pop_back();
     }
 
-    offset_now = symbol_scope_so.top();
+    //offset_now = symbol_scope_so.top();
     symbol_scope_so.pop();
 }
 

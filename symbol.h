@@ -77,13 +77,15 @@ class Symbol{
         AliasType alias_type; // 别名的类别
         int alias_no; // 别名的序号
 
+        int offset; // 偏移量
+
     private:
         std::string name; // 变量名
 
         int level; // 层号
         Type type; // 类型
         int label; // 标记
-        int offset; // 偏移量
+        
         
 };
 
