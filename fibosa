@@ -1,5 +1,5 @@
 int a,b,c;
-float m,n;
+int arr[5];
 int fibo(int a){
     if(a == 1 || a == 2) return 1;
     return fibo(a-1) + fibo(a-2);
@@ -8,9 +8,10 @@ int fibo(int a){
 int main(){
     int m,n,o;
     m = read();
-    // n = fibo(m);
-    n = read();
-    o = m + n;
+    arr[1] = fibo(m);
+    n = arr[1];
+    arr[4] = fibo(n);
+    o = arr[4];
     write(o);
     return 1;
 }

@@ -246,7 +246,7 @@ void EzAquarii::analysis_expression(ASTNode &n){
         } else{
             // 除了OR之外的表达式，都需要先找出来OPN
             OPN opn1, opn2;
-            if(n.nodes[0].name != "primary_expression" && n.nodes[0].name != "constant"){
+            if(n.nodes[0].name != "primary_expression" && n.nodes[0].name != "constant" && n.nodes[0].value != "array"){
                 // 不是这两种的话，说明是还需要分析的表达式
                 // 表达式的值就是place对应的temp
                 analysis_expression(n.nodes[0]); // 首先对子表达式进行分析
@@ -263,8 +263,15 @@ void EzAquarii::analysis_expression(ASTNode &n){
                 int temp_place = st.symbol_table.size()-1;
                 n.code[n.code.size()-1].setResult(symbol_to_opn(st.symbol_table[temp_place]));
                 opn1 = symbol_to_opn(st.symbol_table[temp_place]);
+            }else if(n.nodes[0].value == "array"){
+                //opn1 = symbol_to_opn(st.symbol_table[st.searchIndex(n.nodes[0].nodes[0].value)]);
+                int index = std::stoi(n.nodes[0].nodes[1].nodes[0].value);
+                int off = st.symbol_table[st.searchIndex(n.nodes[0].nodes[0].nodes[0].value)].offset;
+                cout << off << "\t" << index << endl;
+                opn1 = OPN(OPN::Kind::V, st.searchIndex(n.nodes[0].nodes[0].nodes[0].value), off + index *4);
+                cout << opn1.opnString() << endl;
             }
-            if(n.nodes[2].name != "primary_expression" && n.nodes[2].name != "constant"){
+            if(n.nodes[2].name != "primary_expression" && n.nodes[2].name != "constant" && n.nodes[2].value != "array"){
                 // 第二个OPN同理
                 analysis_expression(n.nodes[2]);
                 n.merge(n.nodes[2]); // 然后将语句合并
@@ -280,6 +287,13 @@ void EzAquarii::analysis_expression(ASTNode &n){
                 int temp_place = st.symbol_table.size()-1;
                 n.code[n.code.size()-1].setResult(symbol_to_opn(st.symbol_table[temp_place]));
                 opn2 = symbol_to_opn(st.symbol_table[temp_place]);
+            }else if(n.nodes[2].value == "array"){
+                //opn1 = symbol_to_opn(st.symbol_table[st.searchIndex(n.nodes[0].nodes[0].value)]);
+                int index = std::stoi(n.nodes[2].nodes[1].nodes[0].value);
+                int off = st.symbol_table[st.searchIndex(n.nodes[2].nodes[0].nodes[0].value)].offset;
+                cout << off << "\t" << index << endl;
+                opn2 = OPN(OPN::Kind::V, st.searchIndex(n.nodes[2].nodes[0].nodes[0].value), off + index *4);
+                cout << opn1.opnString() << endl;
             }
             // 找到OPN后开始生成代码
             if(n.nodes[1].name == "assignment_operator"){
@@ -644,6 +658,7 @@ bool EzAquarii::createFunctionDefinition(ASTNode &n){
 void EzAquarii::analysisExpression(ASTNode n){
     // n是name为expression_statement/..._expression的节点，子节点为表达式语句中的内容
     // 遍历这个表达式语句并且对每个使用的标识符查看是否存在未声明错误
+    cout << n.value <<endl;
     if(n.value == "function"){
         // function的第一个子节点是名称，第二个子节点是参数列表
         std::string func_name = n.nodes[0].nodes[0].value;
@@ -673,7 +688,7 @@ void EzAquarii::analysisExpression(ASTNode n){
                 }
             }
         }
-    }else if (n.name == "array"){
+    }else if (n.value == "array"){
         // 第一个子节点是名称，第二个子节点是下标
         // 这里的问题是没有支持多维访问
         std::string array_name = n.nodes[0].nodes[0].value;
